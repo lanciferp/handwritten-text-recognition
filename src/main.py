@@ -25,7 +25,7 @@ from BlankDetector import BlankDetector
 
 BATCH_SIZE = 100
 
-WRITE_BAD_TO_OWN_FILE = False # True
+WRITE_BAD_TO_OWN_FILE = False
 
 if __name__ == "__main__":
 
@@ -231,6 +231,8 @@ if __name__ == "__main__":
             out_path = os.path.join(args.csv, 'predicts.parquet')
 
         for i, image_path in enumerate(pbar):
+            if i < 140000:
+                continue
             if image_path.split(".")[-1] not in supported_extensions:
                 continue
             image_name = image_path.split(os.sep)[-1]
@@ -272,10 +274,8 @@ if __name__ == "__main__":
             final_predicts.append([image_name, predicts[0][0], probabilities[0][0], predicted_blank])
 
             image_finished_path = os.path.join(finished_path, image_name)
-            shutil.move(image_path, image_finished_path)
 
             if i != 0 and i % BATCH_SIZE == 0:
-                print('RAM Used (GB):', psutil.virtual_memory()[3] / 1000000000)
                 if args.csv:
                     with open(out_path, 'a+', newline='') as csvfile:
                         writer = csv.writer(csvfile)

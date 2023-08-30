@@ -5,6 +5,7 @@ year : 1950
 archive: False
 run_batches: False
 delete_snippets : False
+move_snippets : False
 column_model_list:
   - Name:
       - "T1940_A1950_Name_Prod"
