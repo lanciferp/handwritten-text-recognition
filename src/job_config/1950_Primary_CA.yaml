@@ -1,0 +1,24 @@
+snippet_path : "/nfsdata/US_Census_Data/3_Snippets/1950/California/"
+output_path : "/nfsdata/US_Census_Data/4_HWR_Out"
+year : 1950
+archive: False
+run_batches: True
+column_model_list:
+  - Name:
+      - "T1940_A1950_Name_Prod"
+      - "LastDetector_Prod"
+  - Age:
+      - "T1940_A1950_Age_Prod"
+      - "BirthMonthDetector_Prod"
+  - Marital_Status:
+      - "T1940_A1950_MS_Prod"
+  - POB:
+      - "T1940_A1950_POB_Prod"
+  - Race:
+      - "T1940_A1950_Race_Prod"
+  - House_Visit_Index:
+      - "T1940_A1950_CombinedDigit_65_Prod"
+  - Relationship_To_Head:
+      - "T1940_A1950_Relation_Prod"
+  - Sex:
+      - "T1940_A1950_Sex_Prod"
