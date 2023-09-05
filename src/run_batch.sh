@@ -11,10 +11,20 @@
 source /shared/home/cyclemgmt/FlorHTR_env/bin/activate
 
 delete_finished = $5
+start_point = $6
+batch_size = $7
+
+arguments = "--source $1 --weights $2 --csv $3 --append --finished $4"
 
 if [$delete_finished]; then
-  python3 -u main.py "--source" "$1" "--weights" "$2" "--csv" "$3" "--append" "--finished" "$4" "--delete_finished"
+  arguments += "--delete_finished"
   exit
 fi
 
-python3 -u main.py "--source" "$1" "--weights" "$2" "--csv" "$3" "--append" "--finished" "$4"
+if [start_point]; then
+  arguments += " --start_point "
+  arguments += $6
+  arguments += " --batch_size "
+  arguments += $7
+
+python3 -u main.py "$arguments"

@@ -41,6 +41,9 @@ if __name__ == "__main__":
     parser.add_argument("--finished", type=str, default=None)
     parser.add_argument("--delete_finished", action="store_true", default=False)
 
+    parser.add_argument("--start_point", type=int)
+    parser.add_argument("--batch_size", type=int)
+
     parser.add_argument("--weights", type=str, default="")
     parser.add_argument("--arch", type=str, default="flor")
 
@@ -155,7 +158,10 @@ if __name__ == "__main__":
                 
         final_predicts = []
         images = []
-        
+
+        os.environ["TF_ENABLE_AUTO_GC"] = "1"
+        os.environ["TF_RUN_EAGER_OP_AS_FUNCTION"] = 'false'
+
         if args.archive:
             # Slurm allocates storage space for a job that isn't subject to the same file size and count restrictions
             # as the rest of the storage, so we will unpack the archive onto the tmp folder created.
@@ -192,8 +198,6 @@ if __name__ == "__main__":
             folder_path = args.source
             images = glob.iglob(f'{folder_path}/*')
 
-        os.environ["TF_ENABLE_AUTO_GC"] = "1"
-        os.environ["TF_RUN_EAGER_OP_AS_FUNCTION"] = 'false'
 
         finished_path = os.path.join(folder_path, 'finished')
 
@@ -212,6 +216,9 @@ if __name__ == "__main__":
         blank_detector = BlankDetector("./blank_detector.json")
         supported_extensions = ["jpg", "jpeg", "jpe", "jp2", "png"]
         total = len(os.listdir(folder_path))
+
+        if args.start_point is not None:
+            total = total[args.start_point: (args.start_point + args.batch_size + 1)]
 
         print('Total images:', total)
         print('-----------------')
