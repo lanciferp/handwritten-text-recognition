@@ -39,7 +39,12 @@ def main():
                                                  model)
                 os.makedirs(model_output_path, exist_ok=True)
                 full_model_output = os.path.join(model_output_path, model_output_name)
-                command = "sbatch run_batch.sh " + " ".join((input_path, model+".hdf5", full_model_output,
+
+                if run_batches:
+                    command = "sbatch run_batch.sh " + " ".join((input_path, model + ".hdf5", full_model_output,
+                                                                 finished_path, delete_finished, ))
+                else:
+                    command = "sbatch run_batch.sh " + " ".join((input_path, model+".hdf5", full_model_output,
                                                              finished_path, delete_finished))
                 os.system(command)
 

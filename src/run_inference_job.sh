@@ -8,15 +8,7 @@
 
 #Usage sbatch run_inference_job.sh Directory ColumnName WeightsName
 
-
-snippets_path=$1
-column=$2
-weights="../weights/$3.hdf5"
-csv_path="$4/$column"
-column_directory="$snippets_path/$column"
-
 module load python/3.8
 source /shared/home/cyclemgmt/FlorHTR_env/bin/activate
 
-python3 main.py "--source" "$column_directory" "--weights" "$weights" "--csv" "$csv_path" "--append"
-
+python3 main.py "--job_config" "$1"

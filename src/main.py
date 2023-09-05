@@ -23,7 +23,7 @@ from data.generator import DataGenerator
 from network.model import HTRModel
 from BlankDetector import BlankDetector
 
-BATCH_SIZE = 100
+WRITE_BATCH_SIZE = 100
 
 WRITE_BAD_TO_OWN_FILE = False
 
@@ -238,7 +238,7 @@ if __name__ == "__main__":
             out_path = os.path.join(args.csv, 'predicts.parquet')
 
         for i, image_path in enumerate(pbar):
-            if i < 140000:
+            if i < 30000:
                 continue
             if image_path.split(".")[-1] not in supported_extensions:
                 continue
@@ -282,7 +282,7 @@ if __name__ == "__main__":
 
             image_finished_path = os.path.join(finished_path, image_name)
 
-            if i != 0 and i % BATCH_SIZE == 0:
+            if i != 0 and i % WRITE_BATCH_SIZE == 0:
                 if args.csv:
                     with open(out_path, 'a+', newline='') as csvfile:
                         writer = csv.writer(csvfile)

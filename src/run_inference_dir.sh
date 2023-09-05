@@ -18,5 +18,5 @@ column_directory="$snippets_path/$column"
 module load python/3.8
 source /shared/home/cyclemgmt/FlorHTR_env/bin/activate
 
-python3 main.py "--source" "$column_directory" "--weights" "$weights" "--csv" "$csv_path" "--append"
+python3 OneLine.py "--source" "$column_directory" "--weights" "$weights" "--csv" "$csv_path" "--append"
 

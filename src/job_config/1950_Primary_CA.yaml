@@ -3,6 +3,7 @@ output_path : "/nfsdata/US_Census_Data/4_HWR_Out"
 year : 1950
 archive: False
 run_batches: True
+batch_size: 10000
 column_model_list:
   - Name:
       - "T1940_A1950_Name_Prod"
