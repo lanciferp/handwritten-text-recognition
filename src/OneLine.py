@@ -18,7 +18,7 @@ def main():
 
     snippet_path = job_config['snippet_path']
     finished_path = job_config['finished_path']
-    delete_finished = job_config["delete_finished"]
+    delete_finished = job_config["delete_snippets"]
     output_path = job_config['output_path']
     year = job_config['year']
     archive = job_config['archive']
