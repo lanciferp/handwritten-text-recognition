@@ -238,8 +238,6 @@ if __name__ == "__main__":
             out_path = os.path.join(args.csv, 'predicts.parquet')
 
         for i, image_path in enumerate(pbar):
-            if i < 30000:
-                continue
             if image_path.split(".")[-1] not in supported_extensions:
                 continue
             image_name = image_path.split(os.sep)[-1]

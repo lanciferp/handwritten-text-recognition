@@ -11,4 +11,4 @@
 module load python/3.8
 source /shared/home/cyclemgmt/FlorHTR_env/bin/activate
 
-python3 main.py "--job_config" "$1"
+python3 OneLine.py "--job_config" "$1"
