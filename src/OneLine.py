@@ -21,8 +21,8 @@ def main():
     delete_finished = job_config["delete_snippets"]
     output_path = job_config['output_path']
     year = job_config['year']
-    archive = job_config['archive']
     run_batches = job_config['run_batches']
+    batch_size = job_config['batch_size']
     column_model_list = job_config['column_model_list']
 
     sub_name = args.job_config.split('.')[0]
@@ -41,12 +41,18 @@ def main():
                 full_model_output = os.path.join(model_output_path, model_output_name)
 
                 if run_batches:
-                    command = "sbatch run_batch.sh " + " ".join((input_path, model + ".hdf5", full_model_output,
-                                                                 finished_path, delete_finished, ))
+                    images_count = len(os.listdir(input_path))
+                    start_points = range(0, images_count + 1, batch_size)
+                    for start_point in start_points:
+                        command = "sbatch run_batch.sh " + " ".join((input_path, model + ".hdf5", full_model_output,
+                                                                    finished_path, delete_finished,
+                                                                    start_point, batch_size))
+                        os.system(command)
+
                 else:
                     command = "sbatch run_batch.sh " + " ".join((input_path, model+".hdf5", full_model_output,
                                                              finished_path, delete_finished))
-                os.system(command)
+                    os.system(command)
 
 
 if __name__ == "__main__":
