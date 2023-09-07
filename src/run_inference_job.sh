@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --cpus-per-task=1   # number of processor cores (i.e., tasks)
-#SBATCH --mem=7   # memory per CPU core
+#SBATCH --mem=24G   # memory per CPU core
 #SBATCH -J "Flor-Main"   # job name
 #SBATCH -e /shared/home/cyclemgmt/handwritten-text-recognition/src/flor_out/%j-err.txt
 #SBATCH -o /shared/home/cyclemgmt/handwritten-text-recognition/src/flor_out/%j-out.txt
-#SBATCH -p htc
+#SBATCH -p hpc
 
 #Usage sbatch run_inference_job.sh Directory ColumnName WeightsName
 
