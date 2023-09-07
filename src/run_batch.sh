@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --cpus-per-task=2   # number of processor cores (i.e., tasks)
-#SBATCH --mem=3G   # memory per CPU core
+#SBATCH --cpus-per-task=1   # number of processor cores (i.e., tasks)
+#SBATCH --mem=7G   # memory per CPU core
 #SBATCH -J "Flor-Batch"   # job name
 #SBATCH -e ./flor_out/%j-err.txt
 #SBATCH -o ./flor_out/%j-out.txt

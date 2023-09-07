@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --cpus-per-task=8   # number of processor cores (i.e., tasks)
-#SBATCH --mem=50G   # memory per CPU core
+#SBATCH --cpus-per-task=1   # number of processor cores (i.e., tasks)
+#SBATCH --mem=7   # memory per CPU core
 #SBATCH -J "Flor-Main"   # job name
 #SBATCH -e /shared/home/cyclemgmt/handwritten-text-recognition-master/src/flor_out/%j-err.txt
 #SBATCH -o /shared/home/cyclemgmt/handwritten-text-recognition-master/src/flor_out/%j-out.txt
