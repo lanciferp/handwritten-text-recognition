@@ -19,7 +19,7 @@ if [$delete_finished]; then
   $arguments+=" --delete_finished"
 fi
 
-if [start_point]; then
+if [$start_point]; then
   $arguments+=" --start_point "
   $arguments+="$6"
   $arguments+=" --batch_size "

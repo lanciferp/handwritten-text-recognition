@@ -47,11 +47,13 @@ def main():
                                                                     finished_path, str(delete_finished),
                                                                     str(start_point), str(batch_size)))
                         os.system(command)
+                        print(command)
 
                 else:
                     command = "sbatch run_batch.sh " + " ".join((input_path, model+".hdf5", full_model_output,
                                                              finished_path, str(delete_finished)))
                     os.system(command)
+                    print(command)
 
 
 if __name__ == "__main__":
