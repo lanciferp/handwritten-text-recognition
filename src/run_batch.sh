@@ -17,6 +17,7 @@ arguments=" --source $1 --weights $2 --csv $3 --append"
 
 if [$delete_finished]; then
   arguments="${arguments} --delete_finished "
+  echo "Not Batch"
 fi
 
 if [$start_point]; then
