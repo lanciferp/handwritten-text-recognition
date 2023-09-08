@@ -215,10 +215,11 @@ if __name__ == "__main__":
 
         blank_detector = BlankDetector("./blank_detector.json")
         supported_extensions = ["jpg", "jpeg", "jpe", "jp2", "png"]
-        total = len(os.listdir(folder_path))
 
         if args.start_point is not None:
-            total = total[args.start_point: (args.start_point + args.batch_size + 1)]
+            total = args.batch_size
+        else:
+            total = len(os.listdir(folder_path))
 
         print('Total images:', total)
         print('-----------------')
