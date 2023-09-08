@@ -13,7 +13,7 @@ delete_finished=$5
 start_point=$6
 batch_size=$7
 
-arguments="--source" "$1" "--weights" "$2" "--csv" "$3" "--append" "--finished" "$4"
+arguments=" --source $1 --weights $2 --csv $3 --append --finished $4"
 
 if [$delete_finished]; then
   arguments="${arguments} --delete_finished "
