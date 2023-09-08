@@ -44,8 +44,8 @@ def main():
                     start_points = range(0, images_count + 1, batch_size)
                     for start_point in start_points:
                         command = "sbatch run_batch.sh " + " ".join((input_path, model + ".hdf5", full_model_output,
-                                                                    finished_path, str(delete_finished),
-                                                                    str(start_point), str(batch_size)))
+                                                                    str(delete_finished), str(start_point),
+                                                                    str(batch_size)))
                         os.system(command)
                         print(command)
 

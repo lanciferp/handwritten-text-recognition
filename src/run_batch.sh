@@ -9,11 +9,11 @@
 
 source /shared/home/cyclemgmt/FlorHTR_env/bin/activate
 
-delete_finished=$5
-start_point=$6
-batch_size=$7
+delete_finished=$4
+start_point=$5
+batch_size=$6
 
-arguments=" --source $1 --weights $2 --csv $3 --append --finished $4"
+arguments=" --source $1 --weights $2 --csv $3 --append"
 
 if [$delete_finished]; then
   arguments="${arguments} --delete_finished "
