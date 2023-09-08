@@ -8,7 +8,6 @@
 
 #Usage sbatch run_inference_job.sh Directory ColumnName WeightsName
 
-module load python/3.8
 source /shared/home/cyclemgmt/FlorHTR_env/bin/activate
 
 python3 OneLine.py "--job_config" "$1"
