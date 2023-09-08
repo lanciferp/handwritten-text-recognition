@@ -24,7 +24,7 @@ def main():
     run_batches = job_config['run_batches']
     batch_size = job_config['batch_size']
     column_model_list = job_config['column_model_list']
-
+    images_count = job_config['images_count']
     sub_name = args.job_config.split('.')[0]
 
     for column_dict in column_model_list:
@@ -41,7 +41,6 @@ def main():
                 full_model_output = os.path.join(model_output_path, model_output_name)
 
                 if run_batches:
-                    images_count = len(os.listdir(input_path))
                     start_points = range(0, images_count + 1, batch_size)
                     for start_point in start_points:
                         command = "sbatch run_batch.sh " + " ".join((input_path, model + ".hdf5", full_model_output,

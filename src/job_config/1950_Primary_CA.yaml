@@ -6,7 +6,8 @@ archive: False
 run_batches: True
 delete_snippets : False
 move_snippets : False
-batch_size: 10000
+batch_size: 100000
+images_count: 11000000
 column_model_list:
   - Name:
       - "T1940_A1950_Name_Prod"
