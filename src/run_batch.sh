@@ -27,4 +27,4 @@ if [$start_point]; then
   arguments="${arguments}${7}"
 fi
 
-python3 -u main.py "$arguments"
+python3 -u main.py $arguments
