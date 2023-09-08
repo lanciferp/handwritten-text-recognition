@@ -17,14 +17,15 @@ batch_size = $7
 arguments = "--source $1 --weights $2 --csv $3 --append --finished $4"
 
 if [$delete_finished]; then
-  arguments += "--delete_finished"
+  $arguments += "--delete_finished"
   exit
 fi
 
 if [start_point]; then
-  arguments += " --start_point "
-  arguments += $6
-  arguments += " --batch_size "
-  arguments += $7
+  $arguments += " --start_point "
+  $arguments += $6
+  $arguments += " --batch_size "
+  $arguments += $7
+fi
 
 python3 -u main.py "$arguments"
