@@ -1,16 +1,13 @@
 """Dataset reader and process"""
 
 import os
-import html
 import h5py
 import string
 import random
 import pandas as pd
 import numpy as np
 import multiprocessing
-import xml.etree.ElementTree as ET
 
-from glob import glob
 from tqdm import tqdm
 from data import preproc as pp
 from functools import partial
