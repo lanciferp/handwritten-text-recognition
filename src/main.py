@@ -41,8 +41,8 @@ if __name__ == "__main__":
     parser.add_argument("--finished", type=str, default=None)
     parser.add_argument("--delete_finished", action="store_true", default=False)
 
-    parser.add_argument("--start_point", type=int)
-    parser.add_argument("--batch_size", type=int)
+    parser.add_argument("--start_point", type=int, default=0)
+    parser.add_argument("--batch_size", type=int, default=0)
 
     parser.add_argument("--weights", type=str, default="")
     parser.add_argument("--arch", type=str, default="flor")
@@ -216,9 +216,11 @@ if __name__ == "__main__":
         blank_detector = BlankDetector("./blank_detector.json")
         supported_extensions = ["jpg", "jpeg", "jpe", "jp2", "png"]
 
-        if args.start_point is not None:
+        if args.batch_size:
             total = args.batch_size
+            print('Start Point: ', int(args.start_point))
         else:
+            print('Running Inference on entire directory')
             total = len(os.listdir(folder_path))
 
         print('Total images:', total)
