@@ -15,10 +15,8 @@ batch_size=$6
 
 arguments=" --source $1 --weights $2 --csv $3 --append"
 
-if [ $delete_finished == "False" ]; then
+if [ $delete_finished == "True" ]; then
   arguments="${arguments} --delete_finished "
-  echo $delete_finished
-  echo "Not Batch"
 fi
 
 if [ $start_point != 0 ]; then
