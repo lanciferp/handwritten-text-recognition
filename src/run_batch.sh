@@ -23,9 +23,9 @@ fi
 
 if [ $start_point != 0 ]; then
   arguments="${arguments} --start_point "
-  arguments="${arguments}${6}"
+  arguments="${arguments}${5}"
   arguments="${arguments} --batch_size "
-  arguments="${arguments}${7}"
+  arguments="${arguments}${6}"
 fi
 
 python3 -u main.py $arguments
