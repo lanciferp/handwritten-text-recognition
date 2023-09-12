@@ -26,4 +26,6 @@ if [ $start_point != 0 ]; then
   arguments="${arguments}${6}"
 fi
 
+echo $arguments
+
 python3 -u main.py $arguments

@@ -199,6 +199,7 @@ if __name__ == "__main__":
             images = glob.iglob(f'{folder_path}/*')
 
 
+
         finished_path = os.path.join(folder_path, 'finished')
 
         tokenizer = Tokenizer(chars=charset_base, max_text_length=max_text_length)
@@ -218,6 +219,7 @@ if __name__ == "__main__":
 
         if args.batch_size:
             total = args.batch_size
+            images = images[args.start_point: args.star_point + args.batch_size + 1]
             print('Start Point: ', int(args.start_point))
         else:
             print('Running Inference on entire directory')
@@ -304,7 +306,6 @@ if __name__ == "__main__":
             with open(out_path, 'a+', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerows(final_predicts)
-                csvfile.close()
         elif args.parquet:
             fastparquet.write(out_path, final_predicts)
 
