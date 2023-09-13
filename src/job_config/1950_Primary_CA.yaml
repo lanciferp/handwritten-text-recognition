@@ -1,6 +1,6 @@
-snippet_path : "/nfsdata/US_Census_Data/3_Snippets/1950/California/"
-finished_path : ""
-output_path : "/nfsdata/US_Census_Data/4_HWR_Out"
+snippet_path : "/nfsdataLite/US_Census_Data/3_Snippets/1950/California/"
+finished_path : "/nfsdataLite/US_Census_Data/3_Snippets/Finished/1950/California/"
+output_path : "/nfsdataLite/US_Census_Data/4_HWR_Out"
 year : 1950
 archive: False
 run_batches: True
