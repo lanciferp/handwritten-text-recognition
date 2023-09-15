@@ -219,7 +219,7 @@ if __name__ == "__main__":
 
         if args.batch_size:
             total = args.batch_size
-            images = images[args.start_point: args.star_point + args.batch_size + 1]
+            images = images[args.start_point: args.start_point + args.batch_size + 1]
             print('Start Point: ', int(args.start_point))
         else:
             print('Running Inference on entire directory')
