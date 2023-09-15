@@ -246,7 +246,6 @@ if __name__ == "__main__":
         i = 0
         for image_path in islice(images, args.start_point, args.start_point + args.batch_size + 1):
 
-
             if image_path.split(".")[-1] not in supported_extensions:
                 print("Unsupported File ", image_path)
                 continue
@@ -290,7 +289,7 @@ if __name__ == "__main__":
             final_predicts.append([image_name, predicts[0][0], probabilities[0][0], predicted_blank])
 
             image_finished_path = os.path.join(finished_path, image_name)
-
+            i += 1
             if i != 0 and i % WRITE_BATCH_SIZE == 0:
                 if args.csv:
                     with open(out_path, 'a+', newline='') as csvfile:
