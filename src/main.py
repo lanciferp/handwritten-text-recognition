@@ -9,11 +9,13 @@ import shutil
 import csv
 import psutil
 import glob
+
 import cv2
 import matplotlib.pyplot as plt
 
 from zipfile import ZipFile
 from tqdm import tqdm
+from itertools import islice
 
 from data import preproc as pp
 from data.generator import Tokenizer
@@ -219,7 +221,6 @@ if __name__ == "__main__":
 
         if args.batch_size:
             total = args.batch_size
-            images = images[args.start_point: args.start_point + args.batch_size + 1]
             print('Start Point: ', int(args.start_point))
         else:
             print('Running Inference on entire directory')
@@ -242,7 +243,13 @@ if __name__ == "__main__":
         elif args.parquet:
             out_path = os.path.join(args.csv, 'predicts.parquet')
 
-        for i, image_path in enumerate(pbar):
+        i = 0
+        for image_path in images:
+            if i < args.start_point or i > (args.start_point + args.batch_size + 1):
+                continue
+            else:
+                pbar.update(1)
+
             if image_path.split(".")[-1] not in supported_extensions:
                 continue
             image_name = image_path.split(os.sep)[-1]
