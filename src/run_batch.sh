@@ -19,12 +19,7 @@ if [ $delete_finished == "True" ]; then
   arguments="${arguments} --delete_finished "
 fi
 
-
-arguments="${arguments} --start_point "
-arguments="${arguments}${5}"
-arguments="${arguments} --batch_size "
-arguments="${arguments}${6}"
+arguments="${arguments} --start_point ${5} --batch_size ${6}"
 
 echo $arguments
-
 python3 -u main.py $arguments
