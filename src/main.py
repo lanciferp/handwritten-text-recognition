@@ -244,14 +244,8 @@ if __name__ == "__main__":
             out_path = os.path.join(args.csv, 'predicts.parquet')
 
         i = 0
-        for image_path in images:
-            if i < args.start_point or i > (args.start_point + args.batch_size + 1):
-                i += 1
-                continue
-            else:
-                i += 1
-                print(image_path)
-                pbar.update(1)
+        for image_path in islice(images, args.start_point, args.start_point + args.batch_size + 1):
+
 
             if image_path.split(".")[-1] not in supported_extensions:
                 print("Unsupported File ", image_path)
@@ -313,6 +307,8 @@ if __name__ == "__main__":
                 shutil.move(image_path, new_image_path)
             elif args.delete_finished:
                 os.remove(image_path)
+
+            pbar.update(1)
 
         if args.csv:
             with open(out_path, 'a+', newline='') as csvfile:
