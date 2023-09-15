@@ -246,8 +246,10 @@ if __name__ == "__main__":
         i = 0
         for image_path in images:
             if i < args.start_point or i > (args.start_point + args.batch_size + 1):
+                i += 1
                 continue
             else:
+                i += 1
                 pbar.update(1)
 
             if image_path.split(".")[-1] not in supported_extensions:
