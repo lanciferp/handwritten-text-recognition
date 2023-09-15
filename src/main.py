@@ -250,6 +250,7 @@ if __name__ == "__main__":
                 continue
             else:
                 i += 1
+                print(image_path)
                 pbar.update(1)
 
             if image_path.split(".")[-1] not in supported_extensions:
