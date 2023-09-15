@@ -275,6 +275,7 @@ if __name__ == "__main__":
                             f.write(f"{image_name},{failed_to_open_value},0,0\n")                    
                     else:
                         final_predicts.append([image_name, failed_to_open_value, 0, 0])
+                    print("Failed to Open ", image_path)
                     continue
 
             if img is None:
