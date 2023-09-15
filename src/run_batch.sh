@@ -19,12 +19,11 @@ if [ $delete_finished == "True" ]; then
   arguments="${arguments} --delete_finished "
 fi
 
-if [ $start_point != 0 ]; then
-  arguments="${arguments} --start_point "
-  arguments="${arguments}${5}"
-  arguments="${arguments} --batch_size "
-  arguments="${arguments}${6}"
-fi
+
+arguments="${arguments} --start_point "
+arguments="${arguments}${5}"
+arguments="${arguments} --batch_size "
+arguments="${arguments}${6}"
 
 echo $arguments
 
