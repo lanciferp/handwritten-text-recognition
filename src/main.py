@@ -253,6 +253,7 @@ if __name__ == "__main__":
                 pbar.update(1)
 
             if image_path.split(".")[-1] not in supported_extensions:
+                print("Unsupported File ", image_path)
                 continue
             image_name = image_path.split(os.sep)[-1]
             pbar.set_description(f'{image_name}')
