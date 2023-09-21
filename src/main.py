@@ -295,7 +295,6 @@ if __name__ == "__main__":
                     with open(out_path, 'a+', newline='') as csvfile:
                         writer = csv.writer(csvfile)
                         writer.writerows(final_predicts)
-                        csvfile.close()
                 elif args.parquet:
                     fastparquet.write(out_path, final_predicts)
                 final_predicts = []
