@@ -33,25 +33,19 @@ def main():
             input_path = os.path.join(snippet_path, column_name)
             os.makedirs(output_path, exist_ok=True)
 
-            for model in model_list:
-                model_output_name = model + '_' + column_name + '.csv'
-                model_output_path = os.path.join(output_path, str(year), sub_name, column_name,
-                                                 model)
-                os.makedirs(model_output_path, exist_ok=True)
-                full_model_output = os.path.join(model_output_path, model_output_name)
+            batch_folders = os.listdir(input_path)
+            for batch_folder in batch_folders:
+                batch_input_folder = os.path.join(input_path, batch_folder)
 
-                if run_batches:
-                    start_points = range(0, images_count + 1, batch_size)
-                    for start_point in start_points:
-                        command = "sbatch run_batch.sh " + " ".join((input_path, model + ".hdf5", full_model_output,
-                                                                    str(delete_finished), str(start_point),
-                                                                    str(batch_size)))
-                        os.system(command)
-                        print(command)
+                for model in model_list:
+                    model_output_name = model + '_' + column_name + '.csv'
+                    model_output_path = os.path.join(output_path, str(year), sub_name, column_name,
+                                                     model)
+                    os.makedirs(model_output_path, exist_ok=True)
+                    full_model_output = os.path.join(model_output_path, model_output_name)
 
-                else:
-                    command = "sbatch run_batch.sh " + " ".join((input_path, model+".hdf5", full_model_output,
-                                                             finished_path, str(delete_finished)))
+                    command = "sbatch run_batch.sh " + " ".join((batch_input_folder, model + ".hdf5", full_model_output,
+                                                                 str(delete_finished)))
                     os.system(command)
                     print(command)
 
