@@ -244,7 +244,7 @@ if __name__ == "__main__":
             out_path = os.path.join(args.csv, 'predicts.parquet')
 
         i = 0
-        for image_path in islice(images, args.start_point, args.start_point + args.batch_size + 1):
+        for image_path in images:
 
             if image_path.split(".")[-1] not in supported_extensions:
                 print("Unsupported File ", image_path)
@@ -309,12 +309,13 @@ if __name__ == "__main__":
 
             pbar.update(1)
 
-        if args.csv:
-            with open(out_path, 'a+', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerows(final_predicts)
-        elif args.parquet:
-            fastparquet.write(out_path, final_predicts)
+        if len(final_predicts) != 0:
+            if args.csv:
+                with open(out_path, 'a+', newline='') as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerows(final_predicts)
+            elif args.parquet:
+                fastparquet.write(out_path, final_predicts)
 
         finish_time = time.time()
         total_time = finish_time - start_time
