@@ -19,7 +19,7 @@ if [ $delete_finished == "True" ]; then
   arguments="${arguments} --delete_finished "
 fi
 
-if [ $start_point != 0 ]; then
+if [ $start_point -ne 0 ]; then
   arguments="${arguments} --start_point ${5} --batch_size ${6}"
 fi
 
