@@ -35,6 +35,9 @@ def main():
 
             batch_folders = os.listdir(input_path)
             for batch_folder in batch_folders:
+                print(batch_folder)
+                continue
+
                 batch_input_folder = os.path.join(input_path, batch_folder)
 
                 for model in model_list:
