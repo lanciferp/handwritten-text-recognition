@@ -280,7 +280,10 @@ if __name__ == "__main__":
                     final_predicts.append([image_name, non_image_value, 0, 0])
                 continue
 
-            predicted_blank = blank_detector.predictBlank(img)
+            try:
+                predicted_blank = blank_detector.predictBlank(img)
+            except Exception as e:
+                print("Error finding Blank ", e)
 
             img = pp.preprocess(image_path, input_size=input_size)
             x_test = pp.normalization([img])
@@ -302,7 +305,6 @@ if __name__ == "__main__":
             except Exception as e:
                 print(e)
                 continue
-                
 
             # move or delete images based on settings
             if args.finished:
@@ -314,13 +316,16 @@ if __name__ == "__main__":
             pbar.update(1)
 
         if len(final_predicts) != 0:
-            if args.csv:
-                with open(out_path, 'a+', newline='') as csvfile:
-                    writer = csv.writer(csvfile)
-                    writer.writerows(final_predicts)
-            elif args.parquet:
-                fastparquet.write(out_path, final_predicts)
-
+            try:
+                if args.csv:
+                    with open(out_path, 'a+', newline='') as csvfile:
+                        writer = csv.writer(csvfile)
+                        writer.writerows(final_predicts)
+                elif args.parquet:
+                    fastparquet.write(out_path, final_predicts)
+                final_predicts = []
+            except Exception as e:
+                print(e)
         finish_time = time.time()
         total_time = finish_time - start_time
         print("Images Processed: ", total)
