@@ -149,16 +149,16 @@ if __name__ == "__main__":
 
     # The default mode is inference.
     else:
-        print('Not training or transforming.')
-        print('Source Path:', source_path)
-        print('Weights:', weights_path)
-        print('Architecture:', args.arch)
-        print('Archive:', args.archive)
-        print('CSV:', args.csv)
-        print('Append:', args.append)
-        print('Parquet:', args.parquet)
-        print('Test:', args.test)
-                
+        # print('Not training or transforming.')
+        # print('Source Path:', source_path)
+        # print('Weights:', weights_path)
+        # print('Architecture:', args.arch)
+        # print('Archive:', args.archive)
+        # print('CSV:', args.csv)
+        # print('Append:', args.append)
+        # print('Parquet:', args.parquet)
+        # print('Test:', args.test)
+        #
         final_predicts = []
         images = []
 
