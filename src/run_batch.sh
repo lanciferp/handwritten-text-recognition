@@ -7,6 +7,7 @@
 #SBATCH -o ./flor_out/%j-out.txt
 #SBATCH -p htc
 
+sudo apt-get install ffmpeg libsm6 libxext6  -y
 source /shared/home/cyclemgmt/FlorHTR_env/bin/activate
 
 delete_finished=$4
