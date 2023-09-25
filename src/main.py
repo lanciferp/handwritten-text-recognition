@@ -214,7 +214,7 @@ if __name__ == "__main__":
         model.compile()
         if not os.path.exists(weights_path):
             raise AssertionError("Weights don't exist")
-        print(f'Loading weights from {weights_path}')
+        #print(f'Loading weights from {weights_path}')
         model.load_checkpoint(target=weights_path)
 
         blank_detector = BlankDetector("./blank_detector.json")
