@@ -304,6 +304,7 @@ if __name__ == "__main__":
                         except Exception as e:
                             print(e)
                             print(row)
+                            print(out_path)
                             continue
                     f.close()
 
