@@ -294,24 +294,26 @@ if __name__ == "__main__":
 
             image_finished_path = os.path.join(finished_path, image_name)
             i += 1
-            try:
-                if i != 0 and i % WRITE_BATCH_SIZE == 0:
-                    if output_csv:
-                        f = open(out_path, 'a', newline='')
-                        out = csv.writer(f)
-                        for row in final_predicts:
+            if i != 0 and i % WRITE_BATCH_SIZE == 0:
+                if output_csv:
+                    f = open(out_path, 'a', newline='')
+                    out = csv.writer(f)
+                    for row in final_predicts:
+                        try:
                             out.writerow(row)
-                        f.close()
+                        except Exception as e:
+                            print(e)
+                            print(row)
+                            continue
+                    f.close()
 
-                        # with open(out_path, 'a', newline='') as csvfile:
-                        #     writer = csv.writer(csvfile)
-                        #     writer.writerows(final_predicts)
-                    elif args.parquet:
-                        fastparquet.write(out_path, final_predicts)
-                    final_predicts = []
-            except Exception as e:
-                print(e)
-                print(row)
+                    # with open(out_path, 'a', newline='') as csvfile:
+                    #     writer = csv.writer(csvfile)
+                    #     writer.writerows(final_predicts)
+                elif args.parquet:
+                    fastparquet.write(out_path, final_predicts)
+                final_predicts = []
+
 
             # move or delete images based on settings
             if args.finished:
