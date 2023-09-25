@@ -224,11 +224,11 @@ if __name__ == "__main__":
             total = args.batch_size
             print('Start Point: ', int(args.start_point))
         else:
-            print('Running Inference on entire directory')
+           # print('Running Inference on entire directory')
             total = len(os.listdir(folder_path))
 
-        print('Total images:', total)
-        print('-----------------')
+        #print('Total images:', total)
+        #print('-----------------')
         time.sleep(0.25)
         
         pbar = tqdm(images, total=total)

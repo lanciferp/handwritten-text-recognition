@@ -18,5 +18,5 @@ if [ $delete_finished == "True" ]; then
 fi
 
 
-echo $arguments
+#echo $arguments
 python3 -u main.py $arguments
