@@ -37,10 +37,11 @@ def main():
             for batch_folder in batch_folders:
 
                 batch_input_folder = os.path.join(input_path, batch_folder)
+                batch_number = batch_folder.split("_")[-1]
 
                 for model in model_list:
-                    model_output_name = model + '_' + column_name + '.csv'
-                    model_output_path = os.path.join(output_path, str(year), sub_name, column_name)
+                    model_output_name = model + '_' + column_name + "_" + batch_number + '.csv'
+                    model_output_path = os.path.join(output_path, str(year), sub_name, column_name, model)
                     os.makedirs(model_output_path, exist_ok=True)
                     full_model_output = os.path.join(model_output_path, model_output_name)
 
