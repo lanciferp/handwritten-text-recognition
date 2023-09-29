@@ -54,6 +54,7 @@ if __name__ == "__main__":
             combined_csv_path = combine_files(model_output_path, model + "_final.csv")
             final_paths.append(combined_csv_path)
 
+        print(column_dict)
         relation_list = column_dict["Relationship_To_Head"]
 
         for model in relation_list:
