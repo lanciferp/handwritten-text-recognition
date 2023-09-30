@@ -45,11 +45,12 @@ def main():
         image_row_name = image_name + "-" + row_name
         return image_row_name
 
-    name_df = pd.read_csv(name_path, names=["filename", "name_string", "name_confidence", "name_blank"])
+    name_df = pd.read_csv(name_path, names=["filename", "name_string", "name_confidence", "name_blank"],skiprows=1)
     name_df[["filename", "name_string"]] = name_df[["filename", "name_string"]].astype('string')
 
     values = ['<nln>', '<sab>']
-    last_name_df = pd.read_csv(last_name_path, names=["filename", "last_string", "last_confidence", "last_blank"])
+    last_name_df = pd.read_csv(last_name_path, names=["filename", "last_string", "last_confidence", "last_blank"],
+                               skiprows=1)
     last_name_df[["filename", "last_string"]] = last_name_df[["filename", "last_string"]].astype('string')
     last_name_df['last_token'] = [next(iter(difflib.get_close_matches(name, values)), name) for name in
                                   last_name_df["last_string"]]
@@ -60,7 +61,8 @@ def main():
     df['image_name'] = df.apply(makeImageRowName, axis=1)
 
     relation_df = pd.read_csv(relation_path,
-                              names=["filename", "relation_string", "relation_confidence", "relation_blank"])
+                              names=["filename", "relation_string", "relation_confidence", "relation_blank"],
+                              skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     relation_df['image_name'] = relation_df.apply(makeImageRowName, axis=1)
 
