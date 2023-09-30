@@ -10,4 +10,4 @@ export DEBIAN_FRONTEND=noninteractive
 sudo apt-get install -qq ffmpeg libsm6 libxext6  -y < /dev/null > /dev/null
 source /shared/home/cyclemgmt/FlorHTR_env/bin/activate
 
-python3 -u ./combine_columns/Copydown.py "--name" $1 "--last_name" $2 "--relation" $3 "--output" $4
+python3 -u ./Copydown.py "--name" $1 "--last_name" $2 "--relation" $3 "--output" $4
