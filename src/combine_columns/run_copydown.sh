@@ -1,11 +1,10 @@
 #!/bin/bash
 
-#SBATCH --cpus-per-task=1   # number of processor cores (i.e., tasks)
-#SBATCH --mem=7G   # memory per CPU core
+#SBATCH --mem=60G   # memory per CPU core
 #SBATCH -J "NA CDown"   # job name
 #SBATCH -e ./flor_out/%j-err.txt
 #SBATCH -o ./flor_out/%j-out.txt
-#SBATCH -p htc
+#SBATCH -p hpc
 
 export DEBIAN_FRONTEND=noninteractive
 sudo apt-get install -qq ffmpeg libsm6 libxext6  -y < /dev/null > /dev/null
