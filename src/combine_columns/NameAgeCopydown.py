@@ -44,50 +44,56 @@ if __name__ == "__main__":
     sub_name = args.job_config.split('.')[0]
 
     print(column_model_list)
+
+    last_final_path = ""
+    name_final_path = ""
+    relation_final_path = ""
+    year_final_path = ""
+    month_final_path = ""
+
     # Run copydown on Name
     for column_dict in column_model_list:
-        name_list = column_dict["Name"]
+        if "Name" in column_dict:
+            name_list = column_dict["Name"]
 
-        final_paths = []
-        for model in name_list:
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", model)
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", name_list[0])
+            combined_csv_path = combine_files(model_output_path, name_list[0] + "_final.csv")
+            name_final_path = combined_csv_path
 
-            combined_csv_path = combine_files(model_output_path, model + "_final.csv")
-            final_paths.append(combined_csv_path)
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", name_list[1])
+            combined_csv_path = combine_files(model_output_path, name_list[1] + "_final.csv")
+            last_final_path = combined_csv_path
 
-        print(column_dict)
-        relation_list = column_dict["Relationship_To_Head"]
+        if "Relationship_To_Head" in column_dict:
+            relation_list = column_dict["Relationship_To_Head"]
 
-        for model in relation_list:
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Relationship_To_Head", model)
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", relation_list[0])
+            combined_csv_path = combine_files(model_output_path, relation_list[0] + "_final.csv")
+            relation_final_path = combined_csv_path
 
-            combined_csv_path = combine_files(model_output_path, model + "_final.csv")
-            final_paths.append(combined_csv_path)
+        if "Age" in column_dict:
+            age_list = column_dict["Age"]
 
-        copydown_path = os.path.join(output_path, str(year), sub_name, "Name")
-        final_paths.append(copydown_path)
-        command = "sbatch run_copydown.sh " + " ".join(final_paths)
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", age_list[0])
+            combined_csv_path = combine_files(model_output_path, age_list[0] + "_final.csv")
+            year_final_path = combined_csv_path
 
-        print(command)
-        os.system(command)
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", age_list[1])
+            combined_csv_path = combine_files(model_output_path, age_list[1] + "_final.csv")
+            month_final_path = combined_csv_path
 
-        age_list = column_dict["Age"]
+    copydown_path = os.path.join(output_path, str(year), sub_name, "Name")
+    name_final_paths = [name_final_path, last_final_path, relation_final_path, copydown_path]
+    command = "sbatch run_copydown.sh " + " ".join(name_final_paths)
 
-        final_paths = []
-        for model in age_list:
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Age", model)
+    print(command)
+    os.system(command)
 
-            combined_csv_path = combine_files(model_output_path, model + "_final.csv")
-            final_paths.append(combined_csv_path)
+    age_month_path = os.path.join(output_path, str(year), sub_name, "Age")
+    age_final_paths = [year_final_path, month_final_path, relation_final_path, age_month_path]
+    command = "sbatch run_age_months.sh " + " ".join(age_final_paths)
 
-        relation_list = column_dict["Relationship_To_Head"]
+    print(command)
+    os.system(command)
 
-        for model in relation_list:
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Relationship_To_Head", model)
 
-            combined_csv_path = combine_files(model_output_path, model + "_final.csv")
-            final_paths.append(combined_csv_path)
-
-        copydown_path = os.path.join(output_path, str(year), sub_name, "Name")
-        final_paths.append(copydown_path)
-        command = "sbatch run_age_months.sh " + " ".join(final_paths)
