@@ -52,6 +52,7 @@ def main():
     #values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
     month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"])
     month_df[["filename", "month_string"]] = month_df[["filename", "month_string"]].astype('string')
+    month_df[["month_confidence", "month_blank"]] = month_df[["month_confidence", "month_blank"]].astype('float')
     #month_df['month_corrected'] = [next(iter(difflib.get_close_matches(month, values)), month) for month in
      #                              month_df["month_string"]]
 
@@ -73,7 +74,6 @@ def main():
     possible_month_df = possible_month_df[possible_month_df['year_confidence'] < 0.7]
     possible_month_df['replace_month'] = True
 
-    not_month = ['head', 'wife', 'uncle', 'aunt', 'father', 'mother']
 
     df['age_final'] = np.where(((df.month_confidence > 0.9) & (df.year_confidence < 0.7)), df.month_string,
                                df.year_string)
