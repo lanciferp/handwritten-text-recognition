@@ -43,7 +43,6 @@ if __name__ == "__main__":
     year = job_config['year']
     sub_name = args.job_config.split('.')[0]
 
-    print(column_model_list)
 
     last_final_path = ""
     name_final_path = ""
@@ -67,18 +66,18 @@ if __name__ == "__main__":
         if "Relationship_To_Head" in column_dict:
             relation_list = column_dict["Relationship_To_Head"]
 
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", relation_list[0])
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Relationship_To_Head", relation_list[0])
             combined_csv_path = combine_files(model_output_path, relation_list[0] + "_final.csv")
             relation_final_path = combined_csv_path
 
         if "Age" in column_dict:
             age_list = column_dict["Age"]
 
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", age_list[0])
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Age", age_list[0])
             combined_csv_path = combine_files(model_output_path, age_list[0] + "_final.csv")
             year_final_path = combined_csv_path
 
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", age_list[1])
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Age", age_list[1])
             combined_csv_path = combine_files(model_output_path, age_list[1] + "_final.csv")
             month_final_path = combined_csv_path
 
