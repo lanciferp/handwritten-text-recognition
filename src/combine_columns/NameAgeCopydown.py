@@ -43,6 +43,7 @@ if __name__ == "__main__":
     year = job_config['year']
     sub_name = args.job_config.split('.')[0]
 
+    print(column_model_list)
     # Run copydown on Name
     for column_dict in column_model_list:
         name_list = column_dict["Name"]
