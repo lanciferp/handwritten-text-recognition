@@ -48,6 +48,7 @@ def main():
 
     year = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)
     year[["filename", "year_string"]] = year[["filename", "year_string"]].astype('string')
+    print(year.head(10))
     year[["year_confidence", "year_blank"]] = year[["year_confidence", "year_blank"]].astype(np.float64)
 
     #values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
