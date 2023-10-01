@@ -48,13 +48,13 @@ def main():
 
     year = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"],
                        dtype={"filename": 'string', "year_string": 'string', "year_confidence": np.float64,
-                              "year_blank": np.float64}, skiprows=1
+                              "year_blank": np.float64}, header=0
                        )
 
     #values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
     month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"],
                            dtype={"filename": 'string', "month_string": 'string', "month_confidence": np.float64,
-                                  "month_blank": np.float64}, skiprows=1)
+                                  "month_blank": np.float64}, header=0)
     #month_df['month_corrected'] = [next(iter(difflib.get_close_matches(month, values)), month) for month in
      #                              month_df["month_string"]]
 
@@ -66,7 +66,7 @@ def main():
     relation_df = pd.read_csv(relation_path,
                               names=["filename", "relation_string", "relation_confidence", "relation_blank"],
                               dtype={"filename": 'string', "relation_string": 'string', "relation_confidence": np.float64,
-                                     "relation_blank": np.float64}, skiprows=1
+                                     "relation_blank": np.float64}, header=0
                               )
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     relation_df['image_name'] = relation_df.apply(makeImageRowName, axis=1)
