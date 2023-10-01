@@ -73,6 +73,9 @@ def main():
     df['month_confidence'] = pd.to_numeric(df['month_confidence'], errors='coerce')
     df.dropna(inplace=True)
 
+    df['year_confidence'] = pd.to_numeric(df['year_confidence'], errors='coerce')
+    df.dropna(inplace=True)
+
     possible_month_df = df[df['month_confidence'] > 0.9]
     possible_month_df = possible_month_df[possible_month_df['year_confidence'] < 0.7]
     possible_month_df['replace_month'] = True
