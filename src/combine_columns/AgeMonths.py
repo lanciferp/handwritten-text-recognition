@@ -48,7 +48,6 @@ def main():
 
     year = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)
     year[["filename", "year_string"]] = year[["filename", "year_string"]].astype('string')
-    print(year["year_confidence"].head(10))
 
     #values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
     month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"],
