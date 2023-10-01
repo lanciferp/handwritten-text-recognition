@@ -81,14 +81,14 @@ if __name__ == "__main__":
             combined_csv_path = combine_files(model_output_path, age_list[1] + "_final.csv")
             month_final_path = combined_csv_path
 
-    copydown_path = os.path.join(output_path, str(year), sub_name, "Name")
+    copydown_path = os.path.join(output_path, str(year), sub_name, "Name", "Name.csv")
     name_final_paths = [name_final_path, last_final_path, relation_final_path, copydown_path]
     command = "sbatch ./combine_columns/run_copydown.sh " + " ".join(name_final_paths)
 
     print(command)
     os.system(command)
 
-    age_month_path = os.path.join(output_path, str(year), sub_name, "Age")
+    age_month_path = os.path.join(output_path, str(year), sub_name, "Age", "Age.csv")
     age_final_paths = [year_final_path, month_final_path, relation_final_path, age_month_path]
     command = "sbatch ./combine_columns/run_age_months.sh " + " ".join(age_final_paths)
 

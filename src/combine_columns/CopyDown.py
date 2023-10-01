@@ -45,7 +45,7 @@ def main():
         image_row_name = image_name + "-" + row_name
         return image_row_name
 
-    name_df = pd.read_csv(name_path, names=["filename", "name_string", "name_confidence", "name_blank"],skiprows=1)
+    name_df = pd.read_csv(name_path, names=["filename", "name_string", "name_confidence", "name_blank"], skiprows=1)
     name_df[["filename", "name_string"]] = name_df[["filename", "name_string"]].astype('string')
 
     values = ['<nln>', '<sab>']
