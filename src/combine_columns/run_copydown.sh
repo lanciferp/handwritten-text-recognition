@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --mem=60G
+#SBATCH --mem=100G
 #SBATCH -J "CDown"   # job name
 #SBATCH -e ./flor_out/%j-err.txt
 #SBATCH -o ./flor_out/%j-out.txt
