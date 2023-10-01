@@ -46,7 +46,7 @@ def main():
         image_row_name = image_name + "-" + row_name
         return image_row_name
 
-    year = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)
+    year = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], header=0)
     year[["filename", "year_string"]] = year[["filename", "year_string"]].astype('string')
     print(year["year_confidence"].head(10))
     year[["year_confidence", "year_blank"]] = year[["year_confidence", "year_blank"]].astype(np.float64)
