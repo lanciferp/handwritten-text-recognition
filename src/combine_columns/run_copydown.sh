@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --mem=60G   # memory per CPU core
+#SBATCH --mem=100G
 #SBATCH -J "NA CDown"   # job name
 #SBATCH -e ./flor_out/%j-err.txt
 #SBATCH -o ./flor_out/%j-out.txt
