@@ -70,6 +70,9 @@ def main():
     df.drop_duplicates(subset=["image_name"], keep='first', inplace=True)
     df.dropna(inplace=True)
 
+    df['month_confidence'] = pd.to_numeric(df['month_confidence'], errors='coerce')
+    df.dropna(inplace=True)
+
     possible_month_df = df[df['month_confidence'] > 0.9]
     possible_month_df = possible_month_df[possible_month_df['year_confidence'] < 0.7]
     possible_month_df['replace_month'] = True
