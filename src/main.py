@@ -29,7 +29,7 @@ WRITE_BATCH_SIZE = 100
 
 WRITE_BAD_TO_OWN_FILE = False
 def makeImageRowName(x):
-    filename = str(x['filename'])
+    filename = x
     image_name = filename.split("_")[0]
     row_name = "_".join(filename.split("_")[3:])
 
