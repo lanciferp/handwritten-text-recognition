@@ -41,9 +41,9 @@ def main():
     def makeImageRowName(x):
         filename = str(x['filename'])
         image_name = filename.split("_")[0]
-        row_name = "-".join(filename.split("_")[3:])
+        row_name = "_".join(filename.split("_")[3:])
 
-        image_row_name = image_name + "-" + row_name
+        image_row_name = image_name + "_" + row_name
         return image_row_name
 
     year = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)

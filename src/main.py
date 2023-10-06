@@ -28,6 +28,13 @@ from BlankDetector import BlankDetector
 WRITE_BATCH_SIZE = 100
 
 WRITE_BAD_TO_OWN_FILE = False
+def makeImageRowName(x):
+    filename = str(x['filename'])
+    image_name = filename.split("_")[0]
+    row_name = "_".join(filename.split("_")[3:])
+
+    image_row_name = image_name + "_" + row_name
+    return image_row_name
 
 if __name__ == "__main__":
 
@@ -149,16 +156,16 @@ if __name__ == "__main__":
 
     # The default mode is inference.
     else:
-        # print('Not training or transforming.')
-        # print('Source Path:', source_path)
-        # print('Weights:', weights_path)
-        # print('Architecture:', args.arch)
-        # print('Archive:', args.archive)
-        # print('CSV:', args.csv)
-        # print('Append:', args.append)
-        # print('Parquet:', args.parquet)
-        # print('Test:', args.test)
-        #
+        print('Not training or transforming.')
+        print('Source Path:', source_path)
+        print('Weights:', weights_path)
+        print('Architecture:', args.arch)
+        print('Archive:', args.archive)
+        print('CSV:', args.csv)
+        print('Append:', args.append)
+        print('Parquet:', args.parquet)
+        print('Test:', args.test)
+
         final_predicts = []
         images = []
 
@@ -214,7 +221,7 @@ if __name__ == "__main__":
         model.compile()
         if not os.path.exists(weights_path):
             raise AssertionError("Weights don't exist")
-        #print(f'Loading weights from {weights_path}')
+        print(f'Loading weights from {weights_path}')
         model.load_checkpoint(target=weights_path)
 
         blank_detector = BlankDetector("./blank_detector.json")
@@ -224,11 +231,11 @@ if __name__ == "__main__":
             total = args.batch_size
             print('Start Point: ', int(args.start_point))
         else:
-           # print('Running Inference on entire directory')
+            print('Running Inference on entire directory')
             total = len(os.listdir(folder_path))
 
-        #print('Total images:', total)
-        #print('-----------------')
+        print('Total images:', total)
+        print('-----------------')
         time.sleep(0.25)
         
         pbar = tqdm(images, total=total)
@@ -290,7 +297,10 @@ if __name__ == "__main__":
             x_test = pp.normalization([img])
             predicts, probabilities = model.predict(x_test, ctc_decode=True)
             predicts = [[tokenizer.decode(x) for x in y] for y in predicts]
-            final_predicts.append([image_name, predicts[0][0], probabilities[0][0], predicted_blank])
+
+            image_row_name = makeImageRowName(image_name)
+
+            final_predicts.append([image_name, image_row_name, predicts[0][0], probabilities[0][0], predicted_blank])
 
             image_finished_path = os.path.join(finished_path, image_name)
             i += 1
@@ -308,9 +318,6 @@ if __name__ == "__main__":
                             continue
                     f.close()
 
-                    # with open(out_path, 'a', newline='') as csvfile:
-                    #     writer = csv.writer(csvfile)
-                    #     writer.writerows(final_predicts)
                 elif args.parquet:
                     fastparquet.write(out_path, final_predicts)
                 final_predicts = []
