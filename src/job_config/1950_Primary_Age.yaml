@@ -1,0 +1,14 @@
+snippet_path : "/nfsdataLite/US_Census_Data/3_Snippets_Batched/1950/California/"
+finished_path : "/nfsdataLite/US_Census_Data/3_Snippets/Finished/1950/California/"
+output_path : "/nfsdataLite/US_Census_Data/4_HWR_Out"
+year : 1950
+archive: False
+run_batches: True
+delete_snippets : False
+move_snippets : False
+batch_size: 100000
+images_count: 10100000
+column_model_list:
+  - Age:
+      - "T1950_A1950_BirthMonth_Prod"
+
