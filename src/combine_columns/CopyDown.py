@@ -37,6 +37,14 @@ def main():
         relation_path = args.relation
         output_path = args.output
 
+    def makeImageRowName(x):
+        filename = str(x['filename'])
+        image_name = filename.split("_")[0]
+        row_name = "_".join(filename.split("_")[3:])
+
+        image_row_name = image_name + "_" + row_name
+        return image_row_name
+
 
     name_df = pd.read_csv(name_path, names=["filename", "image_row_name", "name_string", "name_confidence", "name_blank"], skiprows=1)
     name_df[["filename", "name_string"]] = name_df[["filename", "name_string"]].astype('string')
@@ -48,7 +56,8 @@ def main():
     last_name_df['last_token'] = [next(iter(difflib.get_close_matches(name, values)), name) for name in
                                   last_name_df["last_string"]]
 
-    df = pd.merge(name_df, last_name_df, on=['filename'])
+    df = pd.merge_asof(name_df, last_name_df, left_index=True, right_index=True, allow_exact_matches=True,
+                       direction="nearest")
     df['filename'] = df['filename'].astype("string")
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
     df['image_name'] = df.apply(makeImageRowName, axis=1)
