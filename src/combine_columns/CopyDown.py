@@ -131,13 +131,13 @@ def main():
 
     selected_df.sort_values("image_name", inplace=True, ignore_index=True)
 
-    previous_last = ""
-    for index, row in selected_df.iterrows():
-        if row['has_last']:
-            previous_last = row['last_name']
-            selected_df.at[index, 'last_name'] = previous_last
-        else:
-            selected_df.at[index, 'last_name'] = previous_last
+    # previous_last = ""
+    # for index, row in selected_df.iterrows():
+    #     if row['has_last']:
+    #         previous_last = row['last_name']
+    #         selected_df.at[index, 'last_name'] = previous_last
+    #     else:
+    #         selected_df.at[index, 'last_name'] = previous_last
 
     selected_df.to_csv(output_path, index=False)
 
