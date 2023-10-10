@@ -80,6 +80,12 @@ if __name__ == "__main__":
             model_output_path = os.path.join(output_path, str(year), sub_name, "Age", age_list[1])
             combined_csv_path = combine_files(model_output_path, age_list[1] + "_final.csv")
             month_final_path = combined_csv_path
+        else:
+            for key in column_dict:
+                for model in column_dict[key]:
+                    model_output_path = os.path.join(output_path, str(year), sub_name, key, model)
+                    combined_csv_path = combine_files(model_output_path, model + "_final.csv")
+                    year_final_path = combined_csv_path
 
     copydown_path = os.path.join(output_path, str(year), sub_name, "Name", "Name.csv")
     name_final_paths = [name_final_path, last_final_path, relation_final_path, copydown_path]
