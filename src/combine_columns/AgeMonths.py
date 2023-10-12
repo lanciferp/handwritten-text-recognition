@@ -46,16 +46,18 @@ def main():
         image_row_name = image_name + "_" + row_name
         return image_row_name
 
-    year = pd.read_csv(year_path, names=["filename", "image_row_name", "year_string", "year_confidence", "year_blank"], skiprows=1)
-    year[["filename", "year_string"]] = year[["filename", "year_string"]].astype('string')
+    year_df = pd.read_csv(year_path, names=["filename", "image_row_name", "year_string", "year_confidence", "year_blank"], skiprows=1)
+    year_df[["filename", "year_string"]] = year_df[["filename", "year_string"]].astype('string')
+    year_df.drop_duplicates(inplace=True)
 
     #values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
     month_df = pd.read_csv(month_path, names=["filename", "image_row_name", "month_string", "month_confidence", "month_blank"],
                            skiprows=1)
+    month_df.drop_duplicates(inplace=True)
     #month_df['month_corrected'] = [next(iter(difflib.get_close_matches(month, values)), month) for month in
      #                              month_df["month_string"]]
 
-    df = pd.merge(year, month_df, on=['filename'])
+    df = pd.merge(year_df, month_df, on=['filename'])
     df['filename'] = df['filename'].astype("string")
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
 
