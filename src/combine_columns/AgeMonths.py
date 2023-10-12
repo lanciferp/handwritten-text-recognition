@@ -58,16 +58,14 @@ def main():
     df = pd.merge(year, month_df, on=['filename'])
     df['filename'] = df['filename'].astype("string")
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
-    df['image_name'] = df.apply(makeImageRowName, axis=1)
 
     relation_df = pd.read_csv(relation_path,
                               names=["filename", "image_row_name", "relation_string", "relation_confidence", "relation_blank"],
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
-    relation_df['image_name'] = relation_df.apply(makeImageRowName, axis=1)
 
-    df = pd.merge(df, relation_df, on=["image_name"])
-    df.drop_duplicates(subset=["image_name"], keep='first', inplace=True)
+    df = pd.merge(df, relation_df, on=["image_row_name"])
+    df.drop_duplicates(subset=["image_row_name"], keep='first', inplace=True)
     df.dropna(inplace=True)
 
     df['month_confidence'] = pd.to_numeric(df['month_confidence'], errors='coerce')
