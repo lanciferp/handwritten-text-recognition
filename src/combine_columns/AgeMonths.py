@@ -46,11 +46,11 @@ def main():
         image_row_name = image_name + "_" + row_name
         return image_row_name
 
-    year = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)
+    year = pd.read_csv(year_path, names=["filename", "image_row_name", "year_string", "year_confidence", "year_blank"], skiprows=1)
     year[["filename", "year_string"]] = year[["filename", "year_string"]].astype('string')
 
     #values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-    month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"],
+    month_df = pd.read_csv(month_path, names=["filename", "image_row_name", "month_string", "month_confidence", "month_blank"],
                            skiprows=1)
     #month_df['month_corrected'] = [next(iter(difflib.get_close_matches(month, values)), month) for month in
      #                              month_df["month_string"]]
@@ -61,7 +61,7 @@ def main():
     df['image_name'] = df.apply(makeImageRowName, axis=1)
 
     relation_df = pd.read_csv(relation_path,
-                              names=["filename", "relation_string", "relation_confidence", "relation_blank"],
+                              names=["filename", "image_row_name", "relation_string", "relation_confidence", "relation_blank"],
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     relation_df['image_name'] = relation_df.apply(makeImageRowName, axis=1)
