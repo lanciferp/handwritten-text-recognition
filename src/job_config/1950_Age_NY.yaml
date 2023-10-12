@@ -1,4 +1,4 @@
-snippet_path : "/nfsdataLite/US_Census_Data/3_Snippets_Batched/1950/New_York/"
+snippet_path : "/nfsdataLite/US_Census_Data/3_Snippets/1950/New_York/"
 finished_path : "/nfsdataLite/US_Census_Data/3_Snippets/Finished/1950/California/"
 output_path : "/nfsdataLite/US_Census_Data/4_HWR_Out"
 year : 1950
