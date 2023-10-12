@@ -46,28 +46,25 @@ def main():
         image_row_name = image_name + "_" + row_name
         return image_row_name
 
-    year_df = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)
+    year_df = pd.read_csv(year_path, names=["filename", "image_row_name", "year_string", "year_confidence", "year_blank"], skiprows=1)
     year_df[["filename", "year_string"]] = year_df[["filename", "year_string"]].astype('string')
     year_df.drop_duplicates(inplace=True)
 
-    values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-    month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"],
+    #values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+    month_df = pd.read_csv(month_path, names=["filename", "image_row_name", "month_string", "month_confidence", "month_blank"],
                            skiprows=1)
-    month_df['month_corrected'] = [next(iter(difflib.get_close_matches(month, values)), month) for month in
-                                   month_df["month_string"]]
     month_df.drop_duplicates(inplace=True)
+    #month_df['month_corrected'] = [next(iter(difflib.get_close_matches(month, values)), month) for month in
+     #                              month_df["month_string"]]
 
     df = pd.merge(year_df, month_df, on=['filename'])
     df['filename'] = df['filename'].astype("string")
-    df['image_row_name'] = df.apply(makeImageRowName, axis=1)
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
 
     relation_df = pd.read_csv(relation_path,
-                              names=["filename", "relation_string", "relation_confidence", "relation_blank"],
+                              names=["filename", "image_row_name", "relation_string", "relation_confidence", "relation_blank"],
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
-    relation_df["image_row_name"] = relation_df.apply(makeImageRowName, axis=1)
-    relation_df = relation_df[["image_row_name", "relation_string", "relation_confidence", "relation_blank"]]
 
     df = pd.merge(df, relation_df, on=["image_row_name"])
     df.drop_duplicates(subset=["image_row_name"], keep='first', inplace=True)
@@ -83,10 +80,11 @@ def main():
     possible_month_df = possible_month_df[possible_month_df['year_confidence'] < 0.7]
     possible_month_df['replace_month'] = True
 
+
     df['age_final'] = np.where(((df.month_confidence > 0.9) & (df.year_confidence < 0.7)), df.month_string,
                                df.year_string)
 
-    selected_df = df[["filename", 'image_row_name', 'age_final', 'year_blank']]
+    selected_df = df[['image_name', 'age_final', 'year_blank']]
     selected_df.to_csv(output_path, index=False)
 
 
