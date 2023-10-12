@@ -47,12 +47,15 @@ def main():
         return image_row_name
 
     year_df = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)
+    print(1)
     year_df[["filename", "year_string"]] = year_df[["filename", "year_string"]].astype('string')
+    print(2)
     year_df.drop_duplicates(inplace=True)
+    print(3)
 
     month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"],
                            skiprows=1)
-
+    print(1)
     month_df.drop_duplicates(inplace=True)
 
     df = pd.merge(year_df, month_df, on=['filename'])
@@ -61,7 +64,7 @@ def main():
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
 
     relation_df = pd.read_csv(relation_path, names=["filename", "relation_string", "relation_confidence", "relation_blank"], skiprows=1)
-    print(1)
+
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     print(2)
     relation_df["image_row_name"] = relation_df.apply(makeImageRowName, axis=1)
