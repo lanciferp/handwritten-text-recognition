@@ -50,11 +50,11 @@ def main():
     year_df[["filename", "year_string"]] = year_df[["filename", "year_string"]].astype('string')
     year_df.drop_duplicates(inplace=True)
 
-    values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+    #values = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
     month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"],
                            skiprows=1)
-    month_df['month_corrected'] = [next(iter(difflib.get_close_matches(month, values)), month) for month in
-                                   month_df["month_string"]]
+    #month_df['month_corrected'] = [next(iter(difflib.get_close_matches(month, values)), month) for month in
+                                   #month_df["month_string"]]
     month_df.drop_duplicates(inplace=True)
 
     df = pd.merge(year_df, month_df, on=['filename'])
