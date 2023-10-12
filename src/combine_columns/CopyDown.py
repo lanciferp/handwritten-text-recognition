@@ -57,7 +57,8 @@ def main():
                                   last_name_df["last_string"]]
 
     df = pd.merge_asof(name_df, last_name_df, left_index=True, right_index=True, allow_exact_matches=True,
-                       direction="nearest", on="filename")
+                       direction="nearest")
+    print(df.columns)
     df['filename'] = df['filename'].astype("string")
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
     df['image_name'] = df.apply(makeImageRowName, axis=1)
