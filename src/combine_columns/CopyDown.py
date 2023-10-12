@@ -48,6 +48,7 @@ def main():
 
     name_df = pd.read_csv(name_path, names=["filename", "image_row_name", "name_string", "name_confidence", "name_blank"], skiprows=1)
     name_df[["filename", "name_string"]] = name_df[["filename", "name_string"]].astype('string')
+    name_df.drop_duplicates(inplace=True)
 
     values = ['<nln>', '<sab>']
     last_name_df = pd.read_csv(last_name_path, names=["filename", "last_string", "last_confidence", "last_blank"],
@@ -55,6 +56,7 @@ def main():
     last_name_df[["filename", "last_string"]] = last_name_df[["filename", "last_string"]].astype('string')
     last_name_df['last_token'] = [next(iter(difflib.get_close_matches(name, values)), name) for name in
                                   last_name_df["last_string"]]
+    last_name_df.drop_duplicates(inplace=True)
 
     df = pd.merge_asof(name_df, last_name_df, left_index=True, right_index=True, allow_exact_matches=True,
                        direction="nearest")
@@ -68,6 +70,7 @@ def main():
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     relation_df['image_name'] = relation_df.apply(makeImageRowName, axis=1)
+    relation_df.drop_duplicates(inplace=True)
 
     df = pd.merge(df, relation_df, on=["image_name"])
     df.drop_duplicates(subset=["image_name"], keep='first', inplace=True)
