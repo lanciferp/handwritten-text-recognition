@@ -58,7 +58,7 @@ def main():
                                   last_name_df["last_string"]]
     last_name_df.drop_duplicates(inplace=True)
 
-    df = pd.merge_asof(name_df, last_name_df, on="filename")
+    df = pd.merge(name_df, last_name_df, on="filename")
     print(df.columns)
     df['filename'] = df['filename'].astype("string")
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
