@@ -51,7 +51,7 @@ def main():
     name_df.drop_duplicates(inplace=True)
 
     values = ['<nln>', '<sab>']
-    last_name_df = pd.read_csv(last_name_path, names=["filename", "last_string", "last_confidence", "last_blank"],
+    last_name_df = pd.read_csv(last_name_path, names=["filename", "image_row_name", "last_string", "last_confidence", "last_blank"],
                                skiprows=1)
     last_name_df[["filename", "last_string"]] = last_name_df[["filename", "last_string"]].astype('string')
     last_name_df['last_token'] = [next(iter(difflib.get_close_matches(name, values)), name) for name in
@@ -66,7 +66,7 @@ def main():
     df['image_name'] = df.apply(makeImageRowName, axis=1)
 
     relation_df = pd.read_csv(relation_path,
-                              names=["filename", "relation_string", "relation_confidence", "relation_blank"],
+                              names=["filename", "image_row_name", "relation_string", "relation_confidence", "relation_blank"],
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     relation_df['image_name'] = relation_df.apply(makeImageRowName, axis=1)
