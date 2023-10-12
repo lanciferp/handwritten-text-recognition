@@ -6,6 +6,7 @@ import difflib
 import pandas as pd
 import numpy as np
 
+
 def main():
     # We need to read in all 3 relevant columns, Name, Last Name, and Relation to Head
     parser = argparse.ArgumentParser()
@@ -45,34 +46,36 @@ def main():
         image_row_name = image_name + "_" + row_name
         return image_row_name
 
-
-    name_df = pd.read_csv(name_path, names=["filename", "image_row_name", "name_string", "name_confidence", "name_blank"], skiprows=1)
+    name_df = pd.read_csv(name_path,
+                          names=["filename", "image_row_name", "name_string", "name_confidence", "name_blank"],
+                          skiprows=1)
     name_df[["filename", "name_string"]] = name_df[["filename", "name_string"]].astype('string')
     name_df.drop_duplicates(inplace=True)
 
     values = ['<nln>', '<sab>']
-    last_name_df = pd.read_csv(last_name_path, names=["filename", "image_row_name", "last_string", "last_confidence", "last_blank"],
+    last_name_df = pd.read_csv(last_name_path,
+                               names=["filename", "image_row_name", "last_string", "last_confidence", "last_blank"],
                                skiprows=1)
     last_name_df[["filename", "last_string"]] = last_name_df[["filename", "last_string"]].astype('string')
     last_name_df['last_token'] = [next(iter(difflib.get_close_matches(name, values)), name) for name in
                                   last_name_df["last_string"]]
     last_name_df.drop_duplicates(inplace=True)
 
-    df = pd.merge(name_df, last_name_df, on="filename")
+    df = pd.merge(name_df, last_name_df, on=["filename", "image_row_name"])
     print(df.columns)
-    df['filename'] = df['filename'].astype("string")
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
-    df['image_name'] = df.apply(makeImageRowName, axis=1)
 
     relation_df = pd.read_csv(relation_path,
-                              names=["filename", "image_row_name", "relation_string", "relation_confidence", "relation_blank"],
+                              names=["filename", "image_row_name", "relation_string", "relation_confidence",
+                                     "relation_blank"],
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
-    relation_df['image_name'] = relation_df.apply(makeImageRowName, axis=1)
+    relation_df = relation_df[[["image_row_name", "relation_string", "relation_confidence",
+                                "relation_blank"]]]
     relation_df.drop_duplicates(inplace=True)
 
-    df = pd.merge(df, relation_df, on=["image_name"])
-    df.drop_duplicates(subset=["image_name"], keep='first', inplace=True)
+    df = pd.merge(df, relation_df, on=["image_row_name"])
+    df.drop_duplicates(subset=["image_row_name"], keep='first', inplace=True)
     df['name_string'].replace('', np.nan, inplace=True)
     df.dropna(inplace=True)
 
@@ -110,14 +113,14 @@ def main():
         .query('_merge=="left_only"') \
         .drop('_merge', axis=1)
 
-
     remaining_df["has_last"] = [True if x == "<nln>" else False for x in remaining_df["last_token"]]
 
     final_df = pd.concat([one_word_df, name_initial_df, head_df, remaining_df])
 
-    selected_df = final_df[["image_name", "name_string", "has_last", "relation_string", "last_string"]]
+    selected_df = final_df[["image_name", "image_row_name", "name_string", "has_last", "relation_string", "last_string",
+                            "name_blank"]]
     common_last_prefixes = ['VON', 'VAN', 'LA', 'O', 'MC', 'EL', 'AL', 'LE', 'LA', 'DA', 'DE', 'DI', 'DO', 'DOS', 'DAS',
-                            'DEL', 'SAN', 'BIN', 'BEN',  'OF', 'SANTA' 'STANTO', 'SAINT', 'D', 'DES', 'DELLA', 'DELA']
+                            'DEL', 'SAN', 'BIN', 'BEN', 'OF', 'SANTA' 'SANTO', 'SAINT', 'D', 'DES', 'DELLA', 'DELA']
 
     def split_name(x):
 
