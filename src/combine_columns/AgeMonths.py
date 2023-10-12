@@ -68,6 +68,7 @@ def main():
 
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     print(1, relation_df.size)
+    relation_df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
     relation_df["image_row_name"] = relation_df.apply(makeImageRowName, axis=1)
     print(2)
     relation_df = relation_df[["image_row_name", "relation_string", "relation_confidence", "relation_blank"]]
