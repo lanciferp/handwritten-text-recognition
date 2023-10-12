@@ -51,12 +51,13 @@ def main():
     year_df[["filename", "year_string"]] = year_df[["filename", "year_string"]].astype('string')
     print(2)
     year_df.drop_duplicates(inplace=True)
-    print(3)
+    print(3, year_df.size)
 
     month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"],
                            skiprows=1)
     print(1, month_df.size)
     month_df.drop_duplicates(inplace=True)
+    print(2, month_df.size)
 
     df = pd.merge(year_df, month_df, on=['filename'])
     df['filename'] = df['filename'].astype("string")
