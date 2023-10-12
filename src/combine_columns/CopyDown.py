@@ -117,7 +117,7 @@ def main():
 
     final_df = pd.concat([one_word_df, name_initial_df, head_df, remaining_df])
 
-    selected_df = final_df[["image_name", "image_row_name", "name_string", "has_last", "relation_string", "last_string",
+    selected_df = final_df[["filename", "image_row_name", "name_string", "has_last", "relation_string", "last_string",
                             "name_blank"]]
     common_last_prefixes = ['VON', 'VAN', 'LA', 'O', 'MC', 'EL', 'AL', 'LE', 'LA', 'DA', 'DE', 'DI', 'DO', 'DOS', 'DAS',
                             'DEL', 'SAN', 'BIN', 'BEN', 'OF', 'SANTA' 'SANTO', 'SAINT', 'D', 'DES', 'DELLA', 'DELA']
