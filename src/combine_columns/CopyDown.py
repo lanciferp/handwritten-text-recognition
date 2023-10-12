@@ -70,8 +70,7 @@ def main():
                                      "relation_blank"],
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
-    relation_df = relation_df[[["image_row_name", "relation_string", "relation_confidence",
-                                "relation_blank"]]]
+    relation_df = relation_df[["image_row_name", "relation_string", "relation_confidence", "relation_blank"]]
     relation_df.drop_duplicates(inplace=True)
 
     df = pd.merge(df, relation_df, on=["image_row_name"])
