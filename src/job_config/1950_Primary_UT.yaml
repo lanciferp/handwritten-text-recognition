@@ -14,7 +14,7 @@ column_model_list:
       - "LastDetector_Prod"
   - Age:
       - "T1940_A1950_Age_Prod"
-      - "BirthMonthDetector_Prod"
+      - "T1950_A1950_BirthMonth_Prod"
   - Marital_Status:
       - "T1940_A1950_MS_Prod"
   - POB:
