@@ -13,7 +13,7 @@ def combine_files(folder_path, csv_name):
     for file in files:
         path = os.path.join(folder_path, file)
 
-        new_df = pd.read_csv(path, names=["filename", "string", "confidence", "blank"])
+        new_df = pd.read_csv(path, names=["filename", "image_row_name",  "string", "confidence", "blank"])
         df = pd.concat((df, new_df))
 
     final_df_path = os.path.join(folder_path, csv_name)
@@ -42,7 +42,6 @@ if __name__ == "__main__":
     column_model_list = job_config['column_model_list']
     year = job_config['year']
     sub_name = args.job_config.split('.')[0]
-
 
     last_final_path = ""
     name_final_path = ""

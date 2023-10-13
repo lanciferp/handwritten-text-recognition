@@ -28,13 +28,23 @@ from BlankDetector import BlankDetector
 WRITE_BATCH_SIZE = 100
 
 WRITE_BAD_TO_OWN_FILE = False
-def makeImageRowName(x):
-    filename = x
-    image_name = filename.split("_")[0]
-    row_name = "_".join(filename.split("_")[3:])
 
-    image_row_name = image_name + "_" + row_name
-    return image_row_name
+
+def makeImageRowName(x):
+    image_name_parts = x.split("_")
+
+    if len(image_name_parts) == 5:
+        img_name = "_".join(image_name_parts[:2])
+        row_name = "_".join(x.split("_")[4:])
+
+        img_row_name = img_name + "_" + row_name
+    else:
+        img_name = image_name_parts[0]
+        row_name = "_".join(x.split("_")[3:])
+
+        img_row_name = img_name + "_" + row_name
+    return img_row_name
+
 
 if __name__ == "__main__":
 
@@ -275,7 +285,8 @@ if __name__ == "__main__":
                         with open(bad_path, 'a') as f:
                             f.write(f"{image_name},{failed_to_open_value},0,0\n")                    
                     else:
-                        final_predicts.append([image_name, failed_to_open_value, 0, 0])
+                        image_row_name = makeImageRowName(image_name)
+                        final_predicts.append([image_name, image_row_name, failed_to_open_value, 0, 0])
                     print("Failed to Open ", image_path)
                     continue
 
@@ -285,7 +296,8 @@ if __name__ == "__main__":
                     with open(bad_path, 'a') as f:
                         f.write(f"{image_name},{non_image_value},0,0\n")
                 else:
-                    final_predicts.append([image_name, non_image_value, 0, 0])
+                    image_row_name = makeImageRowName(image_name)
+                    final_predicts.append([image_name, image_row_name, non_image_value, 0, 0])
                 continue
 
             try:

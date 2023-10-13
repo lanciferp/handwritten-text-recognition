@@ -49,7 +49,7 @@ def main():
     year_df = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)
     print("year", year_df.shape[0])
     year_df[["filename", "year_string"]] = year_df[["filename", "year_string"]].astype('string')
-    year_df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
+    year_df.drop_duplicates(subset=["filename"], keep='first', inplace=True)
     year_df['image_row_name'] = year_df.apply(makeImageRowName, axis=1)
 
     print(year_df.shape[0])
@@ -62,15 +62,15 @@ def main():
 
     df = pd.merge(year_df, month_df, on=['image_row_name'])
     print("year_month", df.shape[0])
-    df['filename'] = df['filename'].astype("string")
-    df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
+    df['image_row_name'] = df['image_row_name'].astype("string")
+    df.drop_duplicates(subset=['image_row_name'], keep='first', inplace=True)
     print(df.shape[0])
 
     relation_df = pd.read_csv(relation_path, names=["filename", "relation_string", "relation_confidence", "relation_blank"], skiprows=1)
     print("relation", relation_df.shape[0])
 
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
-    relation_df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
+    relation_df.drop_duplicates(subset=["filename"], keep='first', inplace=True)
     print(relation_df.shape[0])
 
     relation_df["image_row_name"] = relation_df.apply(makeImageRowName, axis=1)
@@ -81,7 +81,6 @@ def main():
     df.drop_duplicates(subset=["image_row_name"], keep='first', inplace=True)
     df.dropna(inplace=True)
     print(df.shape[0])
-
 
     df['month_confidence'] = pd.to_numeric(df['month_confidence'], errors='coerce')
     df.dropna(inplace=True)
@@ -96,7 +95,7 @@ def main():
     df['age_final'] = np.where(((df.month_confidence > 0.9) & (df.year_confidence < 0.7)), df.month_string,
                                df.year_string)
 
-    selected_df = df[["filename", 'image_row_name', 'age_final', 'year_confidence', 'year_blank']]
+    selected_df = df[['image_row_name', 'age_final', 'year_confidence', 'year_blank']]
     selected_df.to_csv(output_path, index=False)
 
 
