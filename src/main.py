@@ -292,6 +292,7 @@ if __name__ == "__main__":
                 predicted_blank = blank_detector.predictBlank(img)
             except Exception as e:
                 print("Error finding Blank ", e)
+                continue
 
             img = pp.preprocess(image_path, input_size=input_size)
             x_test = pp.normalization([img])

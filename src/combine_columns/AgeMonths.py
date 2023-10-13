@@ -47,39 +47,40 @@ def main():
         return image_row_name
 
     year_df = pd.read_csv(year_path, names=["filename", "year_string", "year_confidence", "year_blank"], skiprows=1)
-    print(1, year_df.size)
+    print("year", year_df.shape[0])
     year_df[["filename", "year_string"]] = year_df[["filename", "year_string"]].astype('string')
     year_df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
-    print(2, year_df.size)
+    year_df['image_row_name'] = year_df.apply(makeImageRowName, axis=1)
 
-    month_df = pd.read_csv(month_path, names=["filename", "month_string", "month_confidence", "month_blank"],
+    print(year_df.shape[0])
+
+    month_df = pd.read_csv(month_path, names=["image_row_name", "month_string", "month_confidence", "month_blank"],
                            skiprows=1)
-    print(1, month_df.size)
-    month_df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
-    print(2, month_df.size)
+    print("month", month_df.shape[0])
+    month_df.drop_duplicates(subset=['image_row_name'], keep='first', inplace=True)
+    print(month_df.shape[0])
 
-    df = pd.merge(year_df, month_df, on=['filename'])
-    print(1, df.size)
+    df = pd.merge(year_df, month_df, on=['image_row_name'])
+    print("year_month", df.shape[0])
     df['filename'] = df['filename'].astype("string")
-    df['image_row_name'] = df.apply(makeImageRowName, axis=1)
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
-    print(2, df.size)
+    print(df.shape[0])
 
     relation_df = pd.read_csv(relation_path, names=["filename", "relation_string", "relation_confidence", "relation_blank"], skiprows=1)
-    print(1, relation_df.size)
+    print("relation", relation_df.shape[0])
 
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     relation_df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
-    print(2, relation_df.size)
+    print(relation_df.shape[0])
 
     relation_df["image_row_name"] = relation_df.apply(makeImageRowName, axis=1)
     relation_df = relation_df[["image_row_name", "relation_string", "relation_confidence", "relation_blank"]]
 
     df = pd.merge(df, relation_df, on=["image_row_name"])
-    print(1, df.size)
+    print("full", df.shape[0])
     df.drop_duplicates(subset=["image_row_name"], keep='first', inplace=True)
     df.dropna(inplace=True)
-    print(2, df.size)
+    print(df.shape[0])
 
 
     df['month_confidence'] = pd.to_numeric(df['month_confidence'], errors='coerce')
@@ -95,7 +96,7 @@ def main():
     df['age_final'] = np.where(((df.month_confidence > 0.9) & (df.year_confidence < 0.7)), df.month_string,
                                df.year_string)
 
-    selected_df = df[["filename", 'image_row_name', 'age_final', 'year_blank']]
+    selected_df = df[["filename", 'image_row_name', 'age_final', 'year_confidence', 'year_blank']]
     selected_df.to_csv(output_path, index=False)
 
 
