@@ -1,5 +1,5 @@
-snippet_path : "/nfsdataLite/US_Census_Data/3_Snippets/1950/New_York/"
-finished_path : "/nfsdataLite/US_Census_Data/3_Snippets/Finished/1950/New_York/"
+snippet_path : "/nfsdataLite/US_Census_Data/3_Snippets/1950/Group_3/"
+finished_path : "/nfsdataLite/US_Census_Data/3_Snippets/Finished/1950/Group_3/"
 output_path : "/nfsdataLite/US_Census_Data/4_HWR_Out"
 year : 1950
 archive: False
