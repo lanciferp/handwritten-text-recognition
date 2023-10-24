@@ -47,14 +47,14 @@ def main():
         return image_row_name
 
     name_df = pd.read_csv(name_path,
-                          names=["filename", "name_string", "name_confidence", "name_blank"],
+                          names=["filename", "image_row_name", "name_string", "name_confidence", "name_blank"],
                           skiprows=1)
     name_df[["filename", "name_string"]] = name_df[["filename", "name_string"]].astype('string')
     name_df.drop_duplicates(inplace=True)
 
     values = ['<nln>', '<sab>']
     last_name_df = pd.read_csv(last_name_path,
-                               names=["filename", "last_string", "last_confidence", "last_blank"],
+                               names=["filename", "image_row_name", "last_string", "last_confidence", "last_blank"],
                                skiprows=1)
     last_name_df[["filename", "last_string"]] = last_name_df[["filename", "last_string"]].astype('string')
     last_name_df['last_token'] = [next(iter(difflib.get_close_matches(name, values)), name) for name in
@@ -66,7 +66,7 @@ def main():
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
 
     relation_df = pd.read_csv(relation_path,
-                              names=["filename", "relation_string", "relation_confidence", "relation_blank"],
+                              names=["filename", "image_row_name", "relation_string", "relation_confidence", "relation_blank"],
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
     relation_df = relation_df[["image_row_name", "relation_string", "relation_confidence", "relation_blank"]]
@@ -142,7 +142,7 @@ def main():
 
     selected_df[['first_name', 'last_name']] = selected_df.apply(split_name, axis=1)
 
-    selected_df.sort_values("image_name", inplace=True, ignore_index=True)
+    selected_df.sort_values("image_row_name", inplace=True, ignore_index=True)
 
     # previous_last = ""
     # for index, row in selected_df.iterrows():

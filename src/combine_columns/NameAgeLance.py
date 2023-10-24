@@ -40,7 +40,7 @@ if __name__ == "__main__":
         job_config = yaml.safe_load(f)
 
     # output_path = job_config['output_path']
-    output_path = "D:/copydown_ut/"
+    output_path = "D:/copydown_ut"
     column_model_list = job_config['column_model_list']
     year = job_config['year']
     sub_name = args.job_config.split('.')[0]
