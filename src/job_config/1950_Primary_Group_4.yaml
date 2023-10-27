@@ -1,0 +1,29 @@
+snippet_path : "/nfsdataLite/US_Census_Data/3_Snippets/1950/Group_4/"
+finished_path : "/nfsdataLite/US_Census_Data/3_Snippets/Finished/1950/Group_4/"
+output_path : "/nfsdataLite/US_Census_Data/4_HWR_Out"
+year : 1950
+archive: False
+run_batches: True
+delete_snippets : False
+move_snippets : False
+batch_size: 100000
+images_count: 10100000
+column_model_list:
+  - Name:
+      - "T1940_A1950_Name_Prod"
+      - "LastDetector_Prod"
+  - Age:
+      - "T1940_A1950_Age_Prod"
+      - "T1950_A1950_BirthMonth_Prod"
+  - Marital_Status:
+      - "T1940_A1950_MS_Prod"
+  - POB:
+      - "T1940_A1950_POB_Prod"
+  - Race:
+      - "T1940_A1950_Race_Prod"
+  - House_Visit_Index:
+      - "T1940_A1950_CombinedDigit_65_Prod"
+  - Sex:
+      - "T1940_A1950_Sex_Prod"
+  - Relationship_To_Head:
+      - "T1940_A1950_Relation_Prod"

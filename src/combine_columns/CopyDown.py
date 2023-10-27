@@ -38,14 +38,6 @@ def main():
         relation_path = args.relation
         output_path = args.output
 
-    def makeImageRowName(x):
-        filename = str(x['filename'])
-        image_name = filename.split("_")[0]
-        row_name = "_".join(filename.split("_")[3:])
-
-        image_row_name = image_name + "_" + row_name
-        return image_row_name
-
     name_df = pd.read_csv(name_path,
                           names=["filename", "image_row_name", "name_string", "name_confidence", "name_blank"],
                           skiprows=1)
@@ -143,14 +135,6 @@ def main():
     selected_df[['first_name', 'last_name']] = selected_df.apply(split_name, axis=1)
 
     selected_df.sort_values("image_row_name", inplace=True, ignore_index=True)
-
-    # previous_last = ""
-    # for index, row in selected_df.iterrows():
-    #     if row['has_last']:
-    #         previous_last = row['last_name']
-    #         selected_df.at[index, 'last_name'] = previous_last
-    #     else:
-    #         selected_df.at[index, 'last_name'] = previous_last
 
     selected_df.to_csv(output_path, index=False)
 
