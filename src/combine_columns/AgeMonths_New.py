@@ -91,7 +91,7 @@ def main():
     df['age_final'] = np.where(((df.month_confidence > 0.9) & (df.year_confidence < 0.7)), df.month_string,
                                df.year_string)
 
-    selected_df = df[['filename', 'image_row_name', 'age_final', 'year_blank']]
+    selected_df = df[['filename', 'image_row_name', 'age_final', 'year_confidence', 'year_blank']]
     selected_df.to_csv(output_path, index=False)
 
 
