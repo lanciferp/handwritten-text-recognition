@@ -40,7 +40,7 @@ if __name__ == "__main__":
         job_config = yaml.safe_load(f)
 
     # output_path = job_config['output_path']
-    output_path = "D:/copydown_ut"
+    output_path = "D:/group_3_5/Group_5/nfsdataLite/US_Census_Data/4_HWR_Out/1950/1950_Primary_Group_5"
     column_model_list = job_config['column_model_list']
     year = job_config['year']
     sub_name = args.job_config.split('.')[0]
@@ -54,7 +54,6 @@ if __name__ == "__main__":
     # Run copydown on Name
     for column_dict in column_model_list:
         if "Name" in column_dict:
-            continue
             name_list = column_dict["Name"]
 
             # model_output_path = os.path.join(output_path, str(year), sub_name, "Name", name_list[0])
@@ -67,7 +66,6 @@ if __name__ == "__main__":
             last_final_path = combined_csv_path
 
         elif "Relationship_To_Head" in column_dict:
-            continue
             relation_list = column_dict["Relationship_To_Head"]
 
             model_output_path = os.path.join(output_path, "Relationship_To_Head", relation_list[0])
@@ -75,7 +73,6 @@ if __name__ == "__main__":
             relation_final_path = combined_csv_path
 
         elif "Age" in column_dict:
-            continue
             age_list = column_dict["Age"]
 
             model_output_path = os.path.join(output_path, "Age", age_list[0])
@@ -86,10 +83,10 @@ if __name__ == "__main__":
             combined_csv_path = combine_files(model_output_path, age_list[1] + "_final.csv")
             month_final_path = combined_csv_path
         else:
-            for key in column_dict:
-                for model in column_dict[key]:
-                    model_output_path = os.path.join(output_path, key, model)
-                    combine_files(model_output_path, model + "_final.csv")
+           for key in column_dict:
+               for model in column_dict[key]:
+                   model_output_path = os.path.join(output_path, key, model)
+                   combine_files(model_output_path, model + "_final.csv")
 
     copydown_path = os.path.join(output_path, str(year), sub_name, "Name", "Name.csv")
     name_final_paths = [name_final_path, last_final_path, relation_final_path, copydown_path]

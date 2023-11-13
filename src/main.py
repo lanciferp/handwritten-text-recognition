@@ -56,7 +56,6 @@ if __name__ == "__main__":
     parser.add_argument("--train", type=str, default="")
 
     parser.add_argument("--source", type=str)
-    parser.add_argument("--archive", type=bool, default=False)
     parser.add_argument("--finished", type=str, default=None)
     parser.add_argument("--delete_finished", action="store_true", default=False)
 
@@ -182,7 +181,7 @@ if __name__ == "__main__":
         os.environ["TF_ENABLE_AUTO_GC"] = "1"
         os.environ["TF_RUN_EAGER_OP_AS_FUNCTION"] = 'false'
 
-        if args.archive:
+        if ".zip" in args.source or ".tar" in args.source:
             # Slurm allocates storage space for a job that isn't subject to the same file size and count restrictions
             # as the rest of the storage, so we will unpack the archive onto the tmp folder created.
             archive_path = args.source
