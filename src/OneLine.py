@@ -37,7 +37,7 @@ def main():
             for batch_folder in batch_folders:
 
                 batch_input_folder = os.path.join(input_path, batch_folder)
-                batch_number = batch_folder.split("_")[-1]
+                batch_number = batch_folder.split("_")[-1].split(".")[0]
 
                 for model in model_list:
                     model_output_name = model + '_' + column_name + "_" + batch_number + '.csv'
