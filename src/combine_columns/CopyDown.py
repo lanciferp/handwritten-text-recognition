@@ -7,6 +7,23 @@ import pandas as pd
 import numpy as np
 
 
+def makeImageRowName(x):
+    x = x["filename"]
+    image_name_parts = x.split("_")
+
+    if len(image_name_parts) == 6:
+        img_name = "_".join(image_name_parts[:2])
+        row_name = "_".join(x.split("_")[4:])
+
+        img_row_name = img_name + "_" + row_name
+    else:
+        img_name = image_name_parts[0]
+        row_name = "_".join(x.split("_")[3:])
+
+        img_row_name = img_name + "_" + row_name
+    return img_row_name
+
+
 def main():
     # We need to read in all 3 relevant columns, Name, Last Name, and Relation to Head
     parser = argparse.ArgumentParser()
@@ -21,27 +38,16 @@ def main():
 
     args = parser.parse_args()
 
-    if args.job_config:
-        yaml_path = os.path.join(".", "job_config", args.job_config)
-        with open(yaml_path, "r") as f:
-            job_config = yaml.safe_load(f)
-
-        config_name = args.job_config
-
-        name_path = None
-        last_name_path = None
-        relation_path = None
-
-    else:
-        name_path = args.name
-        last_name_path = args.last_name
-        relation_path = args.relation
-        output_path = args.output
+    name_path = args.name
+    last_name_path = args.last_name
+    relation_path = args.relation
+    output_path = args.output
 
     name_df = pd.read_csv(name_path,
                           names=["filename", "image_row_name", "name_string", "name_confidence", "name_blank"],
                           skiprows=1)
     name_df[["filename", "name_string"]] = name_df[["filename", "name_string"]].astype('string')
+    name_df["image_row_name"] = name_df.apply(makeImageRowName, axis=1)
     name_df.drop_duplicates(inplace=True)
 
     values = ['<nln>', '<sab>']
@@ -51,16 +57,17 @@ def main():
     last_name_df[["filename", "last_string"]] = last_name_df[["filename", "last_string"]].astype('string')
     last_name_df['last_token'] = [next(iter(difflib.get_close_matches(name, values)), name) for name in
                                   last_name_df["last_string"]]
+    last_name_df["image_row_name"] = last_name_df.apply(makeImageRowName, axis=1)
     last_name_df.drop_duplicates(inplace=True)
 
     df = pd.merge(name_df, last_name_df, on=["filename", "image_row_name"])
-    print(df.columns)
     df.drop_duplicates(subset=['filename'], keep='first', inplace=True)
 
     relation_df = pd.read_csv(relation_path,
                               names=["filename", "image_row_name", "relation_string", "relation_confidence", "relation_blank"],
                               skiprows=1)
     relation_df[["filename", "relation_string"]] = relation_df[["filename", "relation_string"]].astype('string')
+    relation_df["image_row_name"] = relation_df.apply(makeImageRowName, axis=1)
     relation_df = relation_df[["image_row_name", "relation_string", "relation_confidence", "relation_blank"]]
     relation_df.drop_duplicates(inplace=True)
 
@@ -113,7 +120,6 @@ def main():
                             'DEL', 'SAN', 'BIN', 'BEN', 'OF', 'SANTA' 'SANTO', 'SAINT', 'D', 'DES', 'DELLA', 'DELA']
 
     def split_name(x):
-
         name = x['name_string']
         name_parts = name.split()
 
@@ -133,9 +139,7 @@ def main():
         return pd.Series([first_name, last_name])
 
     selected_df[['first_name', 'last_name']] = selected_df.apply(split_name, axis=1)
-
     selected_df.sort_values("image_row_name", inplace=True, ignore_index=True)
-
     selected_df.to_csv(output_path, index=False)
 
 
