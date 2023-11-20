@@ -17,7 +17,8 @@ def combine_files(folder_path, csv_name):
         new_df = pd.read_csv(path, names=["filename", "image_row_name",  "string", "confidence", "blank"], skiprows=0)
         df = pd.concat((df, new_df))
 
-    final_df_path = os.path.join(folder_path, csv_name)
+    csv_path = os.path.sep.join(folder_path.split(os.path.sep)[:-1])
+    final_df_path = os.path.join(csv_path, csv_name)
     df.to_csv(final_df_path, index=False)
     return final_df_path
 
@@ -55,35 +56,35 @@ if __name__ == "__main__":
         if "Name" in column_dict:
             name_list = column_dict["Name"]
 
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Name")
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", name_list[0])
             combined_csv_path = combine_files(model_output_path, name_list[0] + "_final.csv")
             name_final_path = combined_csv_path
 
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Name")
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Name", name_list[1])
             combined_csv_path = combine_files(model_output_path, name_list[1] + "_final.csv")
             last_final_path = combined_csv_path
 
         elif "Relationship_To_Head" in column_dict:
             relation_list = column_dict["Relationship_To_Head"]
 
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Relationship_To_Head",)
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Relationship_To_Head", relation_list[0])
             combined_csv_path = combine_files(model_output_path, relation_list[0] + "_final.csv")
             relation_final_path = combined_csv_path
 
         elif "Age" in column_dict:
             age_list = column_dict["Age"]
 
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Age")
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Age", age_list[0])
             combined_csv_path = combine_files(model_output_path, age_list[0] + "_final.csv")
             year_final_path = combined_csv_path
 
-            model_output_path = os.path.join(output_path, str(year), sub_name, "Age")
+            model_output_path = os.path.join(output_path, str(year), sub_name, "Age", age_list[1])
             combined_csv_path = combine_files(model_output_path, age_list[1] + "_final.csv")
             month_final_path = combined_csv_path
         else:
            for key in column_dict:
                for model in column_dict[key]:
-                   model_output_path = os.path.join(output_path, str(year), sub_name, key)
+                   model_output_path = os.path.join(output_path, str(year), sub_name, key, model)
                    combine_files(model_output_path, model + "_final.csv")
 
     copydown_path = os.path.join(output_path, str(year), sub_name, "Name", "Name.csv")
