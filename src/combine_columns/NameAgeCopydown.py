@@ -39,8 +39,7 @@ if __name__ == "__main__":
     with open(yaml_path, "r") as f:
         job_config = yaml.safe_load(f)
 
-    # output_path = job_config['output_path']
-    output_path = "D:/group_3_5/Group_5/nfsdataLite/US_Census_Data/4_HWR_Out/1950/1950_Primary_Group_5"
+    output_path = job_config['output_path']
     column_model_list = job_config['column_model_list']
     year = job_config['year']
     sub_name = args.job_config.split('.')[0]
