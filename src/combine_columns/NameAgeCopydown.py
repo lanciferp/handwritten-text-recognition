@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    yaml_path = os.path.join("..", "job_config", args.job_config)
+    yaml_path = os.path.join(".", "job_config", args.job_config)
 
     with open(yaml_path, "r") as f:
         job_config = yaml.safe_load(f)
