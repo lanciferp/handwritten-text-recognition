@@ -185,7 +185,8 @@ if __name__ == "__main__":
             # as the rest of the storage, so we will unpack the archive onto the tmp folder created.
             archive_path = args.source
             archive_file_type = archive_path.split(".", 1)[1]
-            folder_path = os.environ['TMPDIR']
+            source_name = archive_path.split(".", 1)[0].split(os.sep)[-1]
+            folder_path = os.path.join(os.environ['TMPDIR'], source_name)
             if archive_file_type == "zip":
                 with ZipFile(archive_path) as zip_file:
                     for member in zip_file.namelist():
