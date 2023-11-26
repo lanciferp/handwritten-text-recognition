@@ -187,6 +187,7 @@ if __name__ == "__main__":
             archive_file_type = archive_path.split(".", 1)[1]
             source_name = archive_path.split(".", 1)[0].split(os.sep)[-1]
             folder_path = os.path.join(os.environ['TMPDIR'], source_name)
+            os.makedirs(folder_path, exists_ok=True)
             if archive_file_type == "zip":
                 with ZipFile(archive_path) as zip_file:
                     for member in zip_file.namelist():
