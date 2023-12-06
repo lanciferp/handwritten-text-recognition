@@ -114,8 +114,8 @@ def main():
 
     final_df = pd.concat([one_word_df, name_initial_df, head_df, remaining_df])
 
-    selected_df = final_df[["filename", "image_row_name", "name_string", "has_last", "relation_string", "last_string",
-                            "name_blank"]]
+    selected_df = final_df[["filename", "image_row_name", "name_string", "name_confidence", "name_blank", "has_last",
+                            "relation_string", "last_string"]]
     common_last_prefixes = ['VON', 'VAN', 'LA', 'O', 'MC', 'EL', 'AL', 'LE', 'LA', 'DA', 'DE', 'DI', 'DO', 'DOS', 'DAS',
                             'DEL', 'SAN', 'BIN', 'BEN', 'OF', 'SANTA' 'SANTO', 'SAINT', 'D', 'DES', 'DELLA', 'DELA']
 
@@ -140,6 +140,8 @@ def main():
 
     selected_df[['first_name', 'last_name']] = selected_df.apply(split_name, axis=1)
     selected_df.sort_values("image_row_name", inplace=True, ignore_index=True)
+    selected_df = final_df[["filename", "image_row_name", 'first_name', "last_name", "name_confidence", "name_blank",
+                            "has_last"]]
     selected_df.to_csv(output_path, index=False)
 
 

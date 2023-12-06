@@ -92,6 +92,7 @@ def main():
                                df.year_string)
 
     selected_df = df[['filename', 'image_row_name', 'age_final', 'year_confidence', 'year_blank']]
+    selected_df['age_final'] = df['age_final'].astype(int)
     selected_df.to_csv(output_path, index=False)
 
 
