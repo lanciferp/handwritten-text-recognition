@@ -101,7 +101,10 @@ class Dataset():
 
         labels_data["filename"] = img_path + "/" + labels_data["filename"].astype(str)
         labels_data["string"] = labels_data["string"].astype(str)
+        doesnt_exist = labels_data
         labels_data = labels_data[labels_data['filename'].apply(os.path.exists)]
+        doesnt_exist['exists'] = labels_data['filename'].apply(os.path.exists)
+        doesnt_exist = doesnt_exist[doesnt_exist['exists'] != True]
 
         train, valid, test = np.split(labels_data.sample(frac=1, random_state=42),
                                       [int(.85 * len(labels_data)), int(1 * len(labels_data))])

@@ -218,8 +218,6 @@ if __name__ == "__main__":
             folder_path = args.source
             images = glob.iglob(f'{folder_path}/*')
 
-
-
         finished_path = os.path.join(folder_path, 'finished')
 
         tokenizer = Tokenizer(chars=charset_base, max_text_length=max_text_length)
@@ -247,7 +245,7 @@ if __name__ == "__main__":
         print('Total images:', total)
         print('-----------------')
         time.sleep(0.25)
-        
+
         pbar = tqdm(images, total=total)
 
         out_path = None
@@ -283,7 +281,7 @@ if __name__ == "__main__":
                     failed_to_open_value = "<FAILED_TO_OPEN>"
                     if WRITE_BAD_TO_OWN_FILE:
                         with open(bad_path, 'a') as f:
-                            f.write(f"{image_name},{failed_to_open_value},0,0\n")                    
+                            f.write(f"{image_name},{failed_to_open_value},0,0\n")
                     else:
                         image_row_name = makeImageRowName(image_name)
                         final_predicts.append([image_name, image_row_name, failed_to_open_value, 0, 0])
