@@ -1,16 +1,13 @@
 """Dataset reader and process"""
 
 import os
-import html
 import h5py
 import string
 import random
 import pandas as pd
 import numpy as np
 import multiprocessing
-import xml.etree.ElementTree as ET
 
-from glob import glob
 from tqdm import tqdm
 from data import preproc as pp
 from functools import partial
@@ -107,7 +104,7 @@ class Dataset():
         labels_data = labels_data[labels_data['filename'].apply(os.path.exists)]
 
         train, valid, test = np.split(labels_data.sample(frac=1, random_state=42),
-                                      [int(.7 * len(labels_data)), int(.85 * len(labels_data))])
+                                      [int(.85 * len(labels_data)), int(1 * len(labels_data))])
 
         dataset = self._init_dataset()
 

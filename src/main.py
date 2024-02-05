@@ -7,15 +7,15 @@ import datetime
 import fastparquet
 import shutil
 import csv
-import statistics
+import psutil
+import glob
+
 import cv2
 import matplotlib.pyplot as plt
-import math
-import numpy as np
 
 from zipfile import ZipFile
 from tqdm import tqdm
-import xgboost as xgb
+from itertools import islice
 
 from data import preproc as pp
 from data.generator import Tokenizer
@@ -23,10 +23,28 @@ from data.reader import Dataset
 from data.generator import DataGenerator
 
 from network.model import HTRModel
+from BlankDetector import BlankDetector
 
-BATCH_SIZE = 1000
+WRITE_BATCH_SIZE = 10000
 
-WRITE_BAD_TO_OWN_FILE = False # True
+WRITE_BAD_TO_OWN_FILE = False
+
+
+def makeImageRowName(x):
+    image_name_parts = x.split("_")
+
+    if len(image_name_parts) == 5:
+        img_name = "_".join(image_name_parts[:2])
+        row_name = "_".join(x.split("_")[4:])
+
+        img_row_name = img_name + "_" + row_name
+    else:
+        img_name = image_name_parts[0]
+        row_name = "_".join(x.split("_")[3:])
+
+        img_row_name = img_name + "_" + row_name
+    return img_row_name
+
 
 if __name__ == "__main__":
 
@@ -34,13 +52,19 @@ if __name__ == "__main__":
 
     parser.add_argument("--transform", action="store_true", default=False)
     parser.add_argument("--labels", type=str)
+
     parser.add_argument("--train", type=str, default="")
 
     parser.add_argument("--source", type=str)
+    parser.add_argument("--finished", type=str, default=None)
+    parser.add_argument("--delete_finished", action="store_true", default=False)
+
+    parser.add_argument("--start_point", type=int, default=0)
+    parser.add_argument("--batch_size", type=int, default=0)
+
     parser.add_argument("--weights", type=str, default="")
     parser.add_argument("--arch", type=str, default="flor")
 
-    parser.add_argument("--archive", type=bool, default=False)
     parser.add_argument("--csv", type=str, default="")
     parser.add_argument("--append", action="store_true", default=False)
     parser.add_argument("--parquet", type=str, default="")
@@ -50,17 +74,25 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     source_path = args.source
-#     weights_path = os.path.join("../weights", args.weights)
-    weights_path = args.weights
+    weights_path = os.path.join("../weights", args.weights)
 
     input_size = (1024, 128, 1)
     max_text_length = 50
     charset_base = string.printable[:95]
+    output_csv = args.csv
 
     start_time = time.time()
 
     if args.transform:
+
         dataset_path = "../data/" + str.split(os.path.basename(args.labels), ".")[0] + ".hdf5"
+
+        print('Transforming')
+        print('Source Path:', source_path)
+        print('Architecture:', args.arch)
+        print('Labels:', args.labels)
+        print('Dataset Path:', dataset_path)
+
         ds = Dataset(source="census", name="census", images=args.source, labels=args.labels)
         ds.read_partitions()
         ds.save_partitions(dataset_path, input_size, max_text_length)
@@ -76,10 +108,14 @@ if __name__ == "__main__":
                               charset=charset_base,
                               max_text_length=max_text_length)
 
+        print('Training')
+        print('Dataset:', args.train)
+        print('Weights Path:', weights_path)
         print(f"Train images: {dtgen.size['train']}")
         print(f"Validation images: {dtgen.size['valid']}")
         print(f"Test images: {dtgen.size['test']}")
 
+        os.environ["TF_ENABLE_AUTO_GC"] = "1"
         model = HTRModel(architecture=args.arch,
                          input_size=input_size,
                          vocab_size=dtgen.tokenizer.vocab_size,
@@ -133,23 +169,25 @@ if __name__ == "__main__":
         print('Source Path:', source_path)
         print('Weights:', weights_path)
         print('Architecture:', args.arch)
-        print('Archive:', args.archive)
         print('CSV:', args.csv)
         print('Append:', args.append)
         print('Parquet:', args.parquet)
         print('Test:', args.test)
-        
-                
-        final_predicts = []
 
+        final_predicts = []
         images = []
-        
-        if args.archive:
+
+        os.environ["TF_ENABLE_AUTO_GC"] = "1"
+        os.environ["TF_RUN_EAGER_OP_AS_FUNCTION"] = 'false'
+
+        if ".zip" in args.source or ".tar" in args.source:
             # Slurm allocates storage space for a job that isn't subject to the same file size and count restrictions
             # as the rest of the storage, so we will unpack the archive onto the tmp folder created.
             archive_path = args.source
             archive_file_type = archive_path.split(".", 1)[1]
-            folder_path = os.environ['TMPDIR']
+            source_name = archive_path.split(".", 1)[0].split(os.sep)[-1]
+            folder_path = os.path.join(os.environ['TMPDIR'], source_name)
+            os.makedirs(folder_path, exist_ok=True)
             if archive_file_type == "zip":
                 with ZipFile(archive_path) as zip_file:
                     for member in zip_file.namelist():
@@ -157,13 +195,13 @@ if __name__ == "__main__":
                         # skip directories
                         if not filename:
                             continue
-
                         # copy file (taken from zipfile's extract)
                         source = zip_file.open(member)
                         target = open(os.path.join(folder_path, filename), "wb")
                         with source, target:
                             shutil.copyfileobj(source, target)
                         images.append(filename)
+                        target.close()
 
             elif archive_file_type == "tar" or archive_file_type == "tar.gz":
                 tar = tarfile.open(archive_path)
@@ -178,7 +216,11 @@ if __name__ == "__main__":
 
         else:
             folder_path = args.source
-            images = os.listdir(folder_path)
+            images = glob.iglob(f'{folder_path}/*')
+
+
+
+        finished_path = os.path.join(folder_path, 'finished')
 
         tokenizer = Tokenizer(chars=charset_base, max_text_length=max_text_length)
         model = HTRModel(architecture=args.arch,
@@ -192,21 +234,22 @@ if __name__ == "__main__":
         print(f'Loading weights from {weights_path}')
         model.load_checkpoint(target=weights_path)
 
-        blank_model = xgb.XGBClassifier()
-        blank_model.load_model("./blank_detector.json")
-        
-        
-        images = [x for x in images if x.split(".")[-1] == "jpg" or x.split(".")[-1] == "jp2"]
-        # images = [x for x in os.listdir(folder_path) if x.split(".")[-1] == "jpg" or x.split(".")[-1] == "jp2"]
-        if args.test:
-            images = images[:args.test]
+        blank_detector = BlankDetector("./blank_detector.json")
+        supported_extensions = ["jpg", "jpeg", "jpe", "jp2", "png"]
 
-        total = len(images)
+        if args.batch_size:
+            total = args.batch_size
+            print('Start Point: ', int(args.start_point))
+        else:
+            print('Running Inference on entire directory')
+            total = len(os.listdir(folder_path))
+
         print('Total images:', total)
-        print('\n-----------------')
+        print('-----------------')
+        time.sleep(0.25)
         
-        pbar = tqdm(images) # tqdm(total=total)
-        
+        pbar = tqdm(images, total=total)
+
         out_path = None
         bad_path = os.path.join(args.csv, 'predicts_bad.csv')
         if args.csv:
@@ -217,15 +260,15 @@ if __name__ == "__main__":
                 bad_path = args.csv.replace(".csv", "_bad.csv")
         elif args.parquet:
             out_path = os.path.join(args.csv, 'predicts.parquet')
-                # bad_path = args.csv.replace(".csv", "_bad.csv")
-            
-            
-        # for image_name in images:
-        for i, image_name in enumerate(pbar):
-        # for image_name in pbar: 
-            pbar.set_description(f'{image_name}') # f'Image: {image_name} ({i})'
-            # print(f'{image_name} ({i} / {total})')
-            
+
+        i = 0
+        for image_path in images:
+
+            if image_path.split(".")[-1] not in supported_extensions:
+                print("Unsupported File ", image_path)
+                continue
+            image_name = image_path.split(os.sep)[-1]
+            pbar.set_description(f'{image_name}')
             image_path = os.path.join(folder_path, image_name)
 
             try:
@@ -237,13 +280,14 @@ if __name__ == "__main__":
                 try:
                     img = plt.imread(image_path)
                 except:
-                    # [image_name, predicts[0][0], probabilities[0][0], predicted_blank]
                     failed_to_open_value = "<FAILED_TO_OPEN>"
                     if WRITE_BAD_TO_OWN_FILE:
                         with open(bad_path, 'a') as f:
                             f.write(f"{image_name},{failed_to_open_value},0,0\n")                    
                     else:
-                        final_predicts.append([image_name, failed_to_open_value, 0, 0])
+                        image_row_name = makeImageRowName(image_name)
+                        final_predicts.append([image_name, image_row_name, failed_to_open_value, 0, 0])
+                    print("Failed to Open ", image_path)
                     continue
 
             if img is None:
@@ -252,69 +296,56 @@ if __name__ == "__main__":
                     with open(bad_path, 'a') as f:
                         f.write(f"{image_name},{non_image_value},0,0\n")
                 else:
-                    final_predicts.append([image_name, non_image_value, 0, 0])
+                    image_row_name = makeImageRowName(image_name)
+                    final_predicts.append([image_name, image_row_name, non_image_value, 0, 0])
                 continue
 
-            # first check if image is a blank snippet
-            vertical_crop = int(img.shape[0] * 0.1375)
-            horizontal_crop = int(img.shape[1] * 0.2375)
-
-            cropped_image = img[vertical_crop:-vertical_crop, horizontal_crop:-horizontal_crop]
-            gray = cv2.cvtColor(cropped_image, cv2.COLOR_RGB2GRAY)
-
-            thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 19, 5)
-
-            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-            closing = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-
-            white_pixels = cv2.countNonZero(closing)
-            total_pixels = closing.shape[0] * closing.shape[1]
-            white_percent = (white_pixels / total_pixels) * 100
-
-            contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            center_xy = [int(cropped_image.shape[1] / 2), int(cropped_image.shape[0] / 2)]
-            cnt_dist_from_center = []
-            cnt_area = []
-            for cnt in contours:
-                x, y, w, h = cv2.boundingRect(cnt)
-                cnt_dist_from_center.append(math.dist(center_xy, [x, y]) / cropped_image.shape[1])
-                cnt_area.append(w * h)
-
-            cnt_avg_size = math.fsum(cnt_area) / len(cnt_area) if len(contours) > 0 else 0
-            largest_cnt = max(cnt_area)
-            smallest_cnt = min(cnt_area)
-            median_cnt = statistics.median(cnt_area)
-
-            cnt_avg_dist = math.fsum(cnt_dist_from_center) / len(cnt_dist_from_center) if len(contours) > 0 else 0
-            largest_dist = max(cnt_dist_from_center)
-            smallest_dist = min(cnt_dist_from_center)
-            median_dist = statistics.median(cnt_dist_from_center)
-
-            blank_features = np.reshape(np.array((white_percent, len(contours), cnt_avg_size, median_cnt, largest_cnt,
-                                                  smallest_cnt, cnt_avg_dist, largest_dist, smallest_dist, median_dist))
-                                        , (1, 10))
-            predicted_blank = blank_model.predict_proba(blank_features)[0][0]
+            try:
+                predicted_blank = blank_detector.predictBlank(img)
+            except Exception as e:
+                print("Error finding Blank ", e)
+                continue
 
             img = pp.preprocess(image_path, input_size=input_size)
             x_test = pp.normalization([img])
-
             predicts, probabilities = model.predict(x_test, ctc_decode=True)
             predicts = [[tokenizer.decode(x) for x in y] for y in predicts]
 
-            final_predicts.append([image_name, predicts[0][0], probabilities[0][0], predicted_blank])
-            # pbar.update(1)
-            if i != 0 and i % BATCH_SIZE == 0:
-                # if args.csv:
-                #     if args.csv.split(".")[-1] != "csv":
-                #         csv_path = os.path.join(args.csv, "predicts.csv")
-                #     else:
-                #         csv_path = args.csv
-                #     with open(csv_path, 'a', newline='') as csvfile:
-                #         writer = csv.writer(csvfile)
-                #         writer.writerows(final_predicts)
-                # elif args.parquet:
-                #     parquet_path = os.path.join(args.csv, 'predicts.parquet')
-                #     fastparquet.write(parquet_path, final_predicts)
+            image_row_name = makeImageRowName(image_name)
+
+            final_predicts.append([image_name, image_row_name, predicts[0][0], probabilities[0][0], predicted_blank])
+
+            image_finished_path = os.path.join(finished_path, image_name)
+            i += 1
+            # if i != 0 and i % WRITE_BATCH_SIZE == 0:
+            #     if output_csv:
+            #         f = open(out_path, 'a', newline='')
+            #         out = csv.writer(f)
+            #         for row in final_predicts:
+            #             try:
+            #                 out.writerow(row)
+            #             except Exception as e:
+            #                 print(e)
+            #                 print(row)
+            #                 print(out_path)
+            #                 continue
+            #         f.close()
+            #
+            #     elif args.parquet:
+            #         fastparquet.write(out_path, final_predicts)
+            #     final_predicts = []
+
+            # move or delete images based on settings
+            if args.finished:
+                new_image_path = os.path.join(args.finished, image_name)
+                shutil.move(image_path, new_image_path)
+            elif args.delete_finished:
+                os.remove(image_path)
+
+            pbar.update(1)
+
+        if len(final_predicts) != 0:
+            try:
                 if args.csv:
                     with open(out_path, 'a+', newline='') as csvfile:
                         writer = csv.writer(csvfile)
@@ -322,28 +353,10 @@ if __name__ == "__main__":
                 elif args.parquet:
                     fastparquet.write(out_path, final_predicts)
                 final_predicts = []
-
-        # if args.csv:
-        #     if args.csv.split(".")[-1] != "csv":
-        #         csv_path = os.path.join(args.csv, "predicts.csv")
-        #     else:
-        #         csv_path = args.csv
-        #     with open(csv_path, 'a', newline='') as csvfile:
-        #         writer = csv.writer(csvfile)
-        #         writer.writerows(final_predicts)
-        # elif args.parquet:
-        #     parquet_path = os.path.join(args.csv, 'predicts.parquet')
-        #     fastparquet.write(parquet_path, final_predicts)
-
-        if args.csv:
-            with open(out_path, 'a', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerows(final_predicts)
-        elif args.parquet:
-            fastparquet.write(out_path, final_predicts)
-
+            except Exception as e:
+                print(e)
         finish_time = time.time()
         total_time = finish_time - start_time
-        print("Images Processed: ", len(images))
+        print("Images Processed: ", total)
         print("Total Time elapsed: ", total_time / 60, " minutes")
-        print("Time per image: ", total_time / len(images), "seconds")
+        print("Time per image: ", total_time / total, "seconds")
